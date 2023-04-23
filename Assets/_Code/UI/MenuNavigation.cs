@@ -39,13 +39,11 @@ public class MenuNavigation : MonoBehaviour
 
     private void Start()
     {
-        /*
         if (defaultSelectedUIElement != null)
         {
             eventSystem.SetSelectedGameObject(defaultSelectedUIElement);
             currentSelectedUIElement = defaultSelectedUIElement;
         }
-        */
     }
 
     private void Update()
@@ -58,23 +56,37 @@ public class MenuNavigation : MonoBehaviour
 
     private void FindAndSelectFirstActiveSelectable()
     {
-        Selectable[] selectables = Selectable.allSelectablesArray;
+        GameObject[] uiElements = GameObject.FindGameObjectsWithTag("NavigableUIElement");
 
-        foreach (Selectable selectable in selectables)
+        int startIndex = -1;
+        for (int i = 0; i < uiElements.Length; i++)
         {
-            if (selectable.gameObject.activeInHierarchy && selectable.interactable)
+            if (uiElements[i] == currentSelectedUIElement)
             {
-                eventSystem.SetSelectedGameObject(selectable.gameObject);
-                currentSelectedUIElement = selectable.gameObject;
+                startIndex = i;
                 break;
             }
         }
+
+        int index = startIndex;
+        do
+        {
+            index = (index + 1) % uiElements.Length;
+            if (uiElements[index].activeInHierarchy && uiElements[index].GetComponent<Selectable>().interactable)
+            {
+                eventSystem.SetSelectedGameObject(uiElements[index]);
+                currentSelectedUIElement = uiElements[index];
+                break;
+            }
+        } while (index != startIndex);
     }
+
+
 
     private void OnNavigatePerformed(InputAction.CallbackContext context)
     {
         Vector2 movement = context.ReadValue<Vector2>();
-        AxisEventData axisEventData = new AxisEventData(eventSystem)
+        AxisEventData axisEventData = new(eventSystem)
         {
             moveVector = movement
         };

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -31,6 +30,16 @@ public class SceneManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
     }
 
+    public void LoadScene(int sceneIndex, LoadSceneMode mode)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex, mode);
+    }
+
+    public void LoadScene(string sceneName, LoadSceneMode mode)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, mode);
+    }
+
     public void LoadSceneAsync(string sceneName)
     {
         StartCoroutine(LoadSceneAsyncCoroutine(sceneName));
@@ -53,6 +62,34 @@ public class SceneManager : MonoBehaviour
     IEnumerator LoadSceneAsyncCoroutine(int sceneIndex)
     {
         AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneIndex);
+        while (!operation.isDone)
+        {
+            yield return null;
+        }
+    }
+
+    public void LoadSceneAsync(string sceneName, LoadSceneMode mode)
+    {
+        StartCoroutine(LoadSceneAsyncCoroutine(sceneName, mode));
+    }
+
+    public void LoadSceneAsync(int sceneIndex, LoadSceneMode mode)
+    {
+        StartCoroutine(LoadSceneAsyncCoroutine(sceneIndex, mode));
+    }
+
+    IEnumerator LoadSceneAsyncCoroutine(string sceneName, LoadSceneMode mode)
+    {
+        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, mode);
+        while (!operation.isDone)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator LoadSceneAsyncCoroutine(int sceneIndex, LoadSceneMode mode)
+    {
+        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneIndex, mode);
         while (!operation.isDone)
         {
             yield return null;

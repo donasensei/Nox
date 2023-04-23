@@ -1,61 +1,205 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
-    [SerializeField] private string stageName;
-    public Node[] nodes;
-    public ExploreCharacter playerPrefab;
+    public StageData StageData;
 
-    private ExploreCharacter playerInstance;
+    [SerializeField] private string stageName;
+    public List<Node> nodes;
+
+    [SerializeField] private ExploreCharacter player;
     private bool isMoving = false;
 
-    // Methods
+    // UI 
+    [SerializeField] private LocationIndicator locationIndicator;
+    [SerializeField] private List<CanvasGroup> canvasGroups;
+    [SerializeField] private ErrorDialog errorDialog;
+
+    // Texts
+    private const string NoneText = "이곳은 아무것도 없습니다.";
+    private const string BattleText = "전투가 시작됩니다.(예정)";
+    private const string GetResourceText = "자원을 얻습니다.(예정)";
+    
+    // Error Texts
+    private const string NodeTypeErrorText = "유효하지 낳은 노드 타입입니다.";
+
 
     private void Start()
     {
-        InitializeStageData();
+        InitStageData();
+
+        player.currentNode = nodes[0];
+        player.transform.position = nodes[0].transform.position;
+        // HideNode(nodes[0]);
+
+        ShowConnectedNodes(nodes[0]);
     }
 
-    private void InitializeStageData()
+    private void Update()
     {
-        StageData stageData = GameManager.Instance.SaveData.stageDataList.Find(sd => sd.stageName == stageName);
+        locationIndicator.SetPercentage(CalculatePercentage());
+        locationIndicator.SetLocationText(stageName);
 
-        if (stageData != null)
+        SetCurrentNodeActive();
+    }
+
+    // Make sure current Node always ActiveSprite
+    private void SetCurrentNodeActive()
+    {
+        Node currentNode = player.currentNode;
+        currentNode.SetActiveSprites();
+    }
+
+    public async void OnNodeClicked(Node targetNode)
+    {
+        if (!isMoving)
         {
-            // Load StageData
+            // Check if the target node is connected to the current node
+            if (!player.currentNode.connectedNodes.Contains(targetNode))
+            {
+                errorDialog.SetErrorText("이동할 수 없는 노드입니다.");
+                errorDialog.Show();
+                return;
+            }
+
+            isMoving = true;
+
+            DisableUIinteractions();
+
+            await player.MoveToNode(targetNode);
+            player.currentNode = targetNode;
+
+            HideAllNodes();
+            ShowNode(targetNode);
+            ShowConnectedNodes(targetNode);
+
+            EnableUIInteractions();
+
+
+            TriggerNodeEvent(player);
+            isMoving = false;
+        }
+    }
+
+    private void TriggerNodeEvent(ExploreCharacter player)
+    {
+        Node currentNode = player.currentNode;
+
+        currentNode.visited = true;
+        switch (currentNode.nodeType)
+        {
+            case NodeType.None:
+                errorDialog.SetErrorText(NoneText);
+                errorDialog.Show();
+                break;
+            case NodeType.Battle:
+                errorDialog.SetErrorText(BattleText);
+                errorDialog.Show();
+                break;
+            case NodeType.GetResource:
+                errorDialog.SetErrorText(GetResourceText);
+                errorDialog.Show();
+                break;
+            default:
+                errorDialog.SetErrorText(NodeTypeErrorText);
+                errorDialog.Show();
+                break;
+        }
+    }
+
+    private void EnableUIInteractions()
+    {
+        // Enable UI interactions
+        foreach(var canvasGroup in canvasGroups)
+        {
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+    }
+
+    private void DisableUIinteractions()
+    {
+        foreach (var canvasGroup in canvasGroups)
+        {
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+    }
+
+    private void ShowConnectedNodes(Node node)
+    {
+        foreach (Node connectedNode in node.connectedNodes)
+        {
+            connectedNode.gameObject.SetActive(true);
+        }
+    }
+
+    private void HideAllNodes()
+    {
+        foreach (Node node in nodes)
+        {
+            HideNode(node);
+        }
+    }
+
+    private void ShowAllNodes()
+    {
+        foreach (Node node in nodes)
+        {
+            ShowNode(node);
+        }
+    }
+
+    private void HideNode(Node node)
+    {
+        node.gameObject.SetActive(false);
+    }
+
+    private void ShowNode(Node node)
+    {
+        node.gameObject.SetActive(true);
+    }
+
+    private IEnumerator InitStageDataCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
+
+        GameManager gameManager = GameManager.Instance;
+        StageData = gameManager.SaveData.stageDataList.Find(stageData => stageData.stageName == stageName);
+
+        if (StageData != null)
+        {
+            // If there is stage data, update the nodes
+            StageData.stageName = stageName;
+            StageData.nodes = nodes;
         }
         else
         {
-            // Create StageData and Save it to SaveData
-            stageData = new StageData(stageName, nodes);
-            GameManager.Instance.SaveData.stageDataList.Add(stageData);
-        }
-    }
-    private async void Update()
-    {
-        if (!isMoving && Input.GetMouseButtonDown(0))
-        {
-            HandleUserInput();
+            StageData = new StageData(stageName, nodes);
+            gameManager.SaveData.stageDataList.Add(StageData);
         }
     }
 
-    private async void HandleUserInput()
+    private void InitStageData()
     {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        StartCoroutine(InitStageDataCoroutine());
+    }
 
-        if (Physics.Raycast(ray, out hit))
-        {
-            Node targetNode = hit.collider.GetComponent<Node>();
-            if (targetNode != null && System.Array.IndexOf(playerInstance.currentNode.connectedNodes, targetNode) >= 0)
-            {
-                isMoving = true;
-                await playerInstance.MoveToNode(targetNode);
-                isMoving = false;
-            }
-        }
+    public void SaveStageData()
+    {
+        GameManager.Instance.SaveData.stageDataList.Find(stageData => stageData.stageName == stageName).nodes = nodes;
+    }
+
+    private int CalculatePercentage()
+    {
+        // Calculate the percentage of the stage
+        int visitedNodeCount = nodes.Count(node => node.visited);
+        int percentage = (int)((float)visitedNodeCount / nodes.Count * 100);
+        return percentage;
     }
 }
 
@@ -63,9 +207,9 @@ public class StageManager : MonoBehaviour
 public class StageData
 {
     public string stageName;
-    public Node[] nodes;
+    public List<Node> nodes;
 
-    public StageData(string stageName, Node[] nodes)
+    public StageData(string stageName, List<Node> nodes)
     {
         this.stageName = stageName;
         this.nodes = nodes;

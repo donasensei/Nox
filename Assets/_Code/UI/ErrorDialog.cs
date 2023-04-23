@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ErrorDialog : MonoBehaviour
 {
     private const float Delay = 1.0f;
-    public Text errorText;
+    [SerializeField] private Text errorText;
     public List<CanvasGroup> Groups;
 
     public Action OnDialogHidden;
@@ -59,5 +59,10 @@ public class ErrorDialog : MonoBehaviour
         gameObject.SetActive(false);
 
         OnDialogHidden?.Invoke(); // Invoke the event after hiding the dialog
+    }
+
+    public void SetErrorText(string text)
+    {
+        errorText.text = text;
     }
 }

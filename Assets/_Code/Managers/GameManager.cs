@@ -8,7 +8,9 @@ public class GameManager : MonoBehaviour
     {
         MainMenu,
         NewGame,
-        LoadGame
+        LoadGame,
+        DayTime,
+        Explore
     }
     public GameState state;
 
@@ -49,10 +51,16 @@ public class GameManager : MonoBehaviour
         saveData = new SaveData
         {
             characterList = new List<CharacterDataWrapper>(),
-            partyList = new List<CharacterDataWrapper>()
+            partyList = new List<CharacterDataWrapper>(),
+            stageDataList = new List<StageData>()
         };
     }
 
+    public DayNight GetDayNight() 
+    {
+        DayNight daynight = SaveData.dayNight;
+        return daynight;
+    }
 
     public List<CharacterDataWrapper> ConvertToWrapperList(List<CharacterData> characterDataList)
     {

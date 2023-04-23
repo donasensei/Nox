@@ -13,6 +13,11 @@ public class SaveLoadManager : MonoBehaviour
     private readonly string[] saveFileNames = { "sav01", "sav02", "sav03", "sav04" };
     private int currentSaveSlotIndex;
     
+    // Error Messages
+    private const string NoSaveFileError = "저장된 데이터가 없습니다.";
+    private const string SaveFileDelected = "저장된 데이터가 삭제되었습니다.";
+    private const string SaveFileOverwritten = "이미 저장된 파일이 있습니다. 덮어쓰시겠습니까?";
+
 
     private void Start()
     {
@@ -33,9 +38,8 @@ public class SaveLoadManager : MonoBehaviour
             }
             else
             {
-                // Dialog 띄우기
+                boolDialog.SetInfoText("이미 저장된 파일이 있습니다. 덮어쓰시겠습니까?");
                 boolDialog.Show();
-                boolDialog.InfoText.text = "이미 저장된 파일이 있습니다. 덮어쓰시겠습니까?";
             }
         }
         else if (GameManager.Instance.state == GameManager.GameState.LoadGame)
@@ -59,7 +63,7 @@ public class SaveLoadManager : MonoBehaviour
     public void DeleteSave()
     {
         ES3.DeleteFile(saveFileNames[currentSaveSlotIndex]);
-        errorDialog.errorText.text = "저장된 데이터가 삭제되었습니다.";
+        errorDialog.SetErrorText(SaveFileDelected);
         errorDialog.Show();
     }
 
@@ -101,8 +105,8 @@ public class SaveLoadManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No Savefile in " + saveFileNames[saveFileIndex].ToString());
+            errorDialog.SetErrorText(NoSaveFileError.ToString());
             errorDialog.Show();
-            errorDialog.errorText.text = "저장된 파일이 없습니다.";
         }
     }
 
@@ -156,7 +160,8 @@ public class SaveLoadManager : MonoBehaviour
 
             // Lists
             partyList = new List<CharacterDataWrapper>(),
-            characterList = new List<CharacterDataWrapper>()
+            characterList = new List<CharacterDataWrapper>(),
+            stageDataList = new List<StageData>()
         };
 
         gameManager.SaveData = saveData;

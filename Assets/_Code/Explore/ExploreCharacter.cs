@@ -1,18 +1,15 @@
-using DG.Tweening;
 using System.Threading.Tasks;
 using UnityEngine;
+using DG.Tweening;
 
 public class ExploreCharacter : MonoBehaviour
 {
     public Node currentNode;
-    public float moveDuration = 1f;
+    [SerializeField] private float moveDuration = 1f;
 
     public async Task MoveToNode(Node targetNode)
     {
-        // Stop any existing movement tweens
         transform.DOKill();
-
-        // Create a task completion source
         TaskCompletionSource<bool> tcs = new();
 
         // Move the player smoothly to the target node
@@ -24,7 +21,6 @@ public class ExploreCharacter : MonoBehaviour
                 tcs.SetResult(true);
             });
 
-        // Wait for the movement to complete
         await tcs.Task;
     }
 }

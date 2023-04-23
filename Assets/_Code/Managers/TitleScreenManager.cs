@@ -5,6 +5,11 @@ public class TitleScreenManager : MonoBehaviour
     [SerializeField] private BoolDialog @bool;
     [SerializeField] private ErrorDialog @error;
 
+    // Texts
+    private const string NewGameText = "새로운 게임을 시작합니다.";
+    private const string LoadGameText = "이전에 저장한 게임을 불러옵니다.";
+    private const string QuitGameText = "게임의 설정을 변경합니다.";
+
     public void NewGame()
     {
         GameManager.Instance.state = GameManager.GameState.NewGame;
@@ -13,7 +18,7 @@ public class TitleScreenManager : MonoBehaviour
 
     public void QuitGame()
     {
-        @bool.InfoText.text = "게임을 종료하시겠습니까?";
+        @bool.SetInfoText(QuitGameText);
         @bool.Show();
     }
 
@@ -26,7 +31,7 @@ public class TitleScreenManager : MonoBehaviour
     public void Options()
     {
         Debug.Log("Option Ready Yet");
-        @error.errorText.text = "옵션은 작업 중입니다.";
+        @error.SetErrorText("옵션은 작업 중입니다.");
         @error.Show();
     }
 

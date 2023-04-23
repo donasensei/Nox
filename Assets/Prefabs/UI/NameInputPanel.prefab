@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 4587919572552953030}
   m_Layer: 5
   m_Name: Confirm
-  m_TagString: Untagged
+  m_TagString: NavigableUIElement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 358897098994068708}
   m_Layer: 5
   m_Name: Cancel
-  m_TagString: Untagged
+  m_TagString: NavigableUIElement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -859,7 +859,7 @@ GameObject:
   - component: {fileID: 3447786312475487462}
   m_Layer: 5
   m_Name: InputField (Legacy)
-  m_TagString: Untagged
+  m_TagString: NavigableUIElement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

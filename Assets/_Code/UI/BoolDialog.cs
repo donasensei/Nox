@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class BoolDialog : MonoBehaviour
 {
     public Text InfoText;
-    public List<CanvasGroup> Groups;
+    [SerializeField] private List<CanvasGroup> Groups;
 
     private void Awake()
     {
@@ -30,5 +30,10 @@ public class BoolDialog : MonoBehaviour
             group.blocksRaycasts = true;
         }
         gameObject.SetActive(false);
+    }
+
+    public void SetInfoText(string text)
+    {
+        InfoText.text = text;
     }
 }
