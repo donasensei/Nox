@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: afcaea854bd84574690d39e4c077714c
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - SF_HambakSnow
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: ca6defff6a3dbfa4483d4997c80bdf97, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
