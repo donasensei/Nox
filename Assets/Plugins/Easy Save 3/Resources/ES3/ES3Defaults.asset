@@ -36,6 +36,8 @@ MonoBehaviour:
     - DOTween.Modules
     - DOTweenPro.EditorScripts
     - DOTweenPro.Scripts
+    - InkEditor
+    - Ink-Libraries
     - PPv2URPConverters
     - PsdPlugin
     showAdvancedSettings: 1

@@ -12,12 +12,17 @@ public class StageManager : MonoBehaviour
     public List<Node> nodes;
 
     [SerializeField] private ExploreCharacter player;
+
+    // State
     private bool isMoving = false;
+    private bool isVisitBattle = false;
+    private bool isVisitResources = false;
 
     // UI 
     [SerializeField] private LocationIndicator locationIndicator;
     [SerializeField] private List<CanvasGroup> canvasGroups;
     [SerializeField] private ErrorDialog errorDialog;
+    [SerializeField] private DialogueSystem dialogueSystem;
 
     // Texts
     private const string NoneText = "이곳은 아무것도 없습니다.";
@@ -43,6 +48,15 @@ public class StageManager : MonoBehaviour
     {
         locationIndicator.SetPercentage(CalculatePercentage());
         locationIndicator.SetLocationText(stageName);
+
+        if (!dialogueSystem.gameObject.activeSelf)
+        {
+            EnableUIInteractions();
+        }
+        else
+        {
+            DisableUIinteractions();
+        }
 
         SetCurrentNodeActive();
     }
@@ -97,12 +111,22 @@ public class StageManager : MonoBehaviour
                 errorDialog.Show();
                 break;
             case NodeType.Battle:
-                errorDialog.SetErrorText(BattleText);
-                errorDialog.Show();
+                //errorDialog.SetErrorText(BattleText);
+                //errorDialog.Show();
+                if(!isVisitBattle)
+                {
+                    isVisitBattle = true;
+                    dialogueSystem.StartStory(0);
+                }
                 break;
             case NodeType.GetResource:
-                errorDialog.SetErrorText(GetResourceText);
-                errorDialog.Show();
+                //errorDialog.SetErrorText(GetResourceText);
+                //errorDialog.Show();
+                if(!isVisitResources)
+                {
+                    isVisitResources = true;
+                    dialogueSystem.StartStory(1);
+                }
                 break;
             default:
                 errorDialog.SetErrorText(NodeTypeErrorText);

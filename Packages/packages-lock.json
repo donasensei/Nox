@@ -107,7 +107,7 @@
     },
     "com.unity.cinemachine": {
       "version": "2.8.9",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.31"
@@ -140,16 +140,6 @@
         "com.unity.2d.spriteshape": "7.0.6",
         "com.unity.2d.tilemap": "1.0.0",
         "com.unity.2d.tilemap.extras": "2.2.4"
-      }
-    },
-    "com.unity.feature.gameplay-storytelling": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.cinemachine": "2.8.9",
-        "com.unity.timeline": "1.6.4",
-        "com.unity.visualscripting": "1.8.0"
       }
     },
     "com.unity.ide.rider": {
