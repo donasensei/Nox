@@ -17,6 +17,7 @@ public class SaveLoadManager : MonoBehaviour
     private const string NoSaveFileError = "저장된 데이터가 없습니다.";
     private const string SaveFileDelected = "저장된 데이터가 삭제되었습니다.";
     private const string SaveFileOverwritten = "이미 저장된 파일이 있습니다. 덮어쓰시겠습니까?";
+    private const string SaveFIle = "저장되었습니다.";
 
 
     private void Start()
@@ -40,13 +41,20 @@ public class SaveLoadManager : MonoBehaviour
             {
                 boolDialog.SetInfoText("이미 저장된 파일이 있습니다. 덮어쓰시겠습니까?");
                 boolDialog.Show();
+                boolDialog.OnConfirm += NewSaveInit;
+                boolDialog.OnCancel += () => { boolDialog.Hide(); };
             }
         }
         else if (GameManager.Instance.state == GameManager.GameState.LoadGame)
         {
             LoadGame(saveFileIndex);
         }
+        else if (GameManager.Instance.state == GameManager.GameState.SaveGame)
+        {
+            SaveGame(currentSaveSlotIndex);
+        }
     }
+
 
     public void NewSaveInit()
     {
@@ -100,7 +108,7 @@ public class SaveLoadManager : MonoBehaviour
         {
             GameManager.Instance.SaveData = ES3.Load<SaveData>("saveData", saveFileName);
             Debug.Log("Load SaveData : " + saveFileName);
-            SceneManager.Instance.LoadScene(GameManager.Instance.SaveData.lastSceneIndex);
+            CustomSceneManager.Instance.LoadScene(GameManager.Instance.SaveData.lastSceneIndex);
         }
         else
         {
@@ -108,6 +116,36 @@ public class SaveLoadManager : MonoBehaviour
             errorDialog.SetErrorText(NoSaveFileError.ToString());
             errorDialog.Show();
         }
+    }
+
+    public void SaveGame(int saveFIleIndex)
+    {
+        string saveFileName = saveFileNames[saveFIleIndex];
+        if (ES3.FileExists(saveFileName))
+        {
+            if (GameManager.Instance.SaveData.saveFileIndex != currentSaveSlotIndex)
+            {
+                boolDialog.SetInfoText(SaveFileOverwritten);
+                boolDialog.Show();
+                boolDialog.OnConfirm += NewSaveInit;
+                boolDialog.OnCancel += () => { boolDialog.Hide(); };
+            }
+            else
+            {
+                ES3.Save<SaveData>("saveData", GameManager.Instance.SaveData, saveFileName);
+                Debug.Log("Save SaveData : " + saveFileName);
+                errorDialog.SetErrorText(SaveFIle);
+                errorDialog.Show();
+            }
+        }
+        else
+        {
+            ES3.Save<SaveData>("saveData", GameManager.Instance.SaveData, saveFileName);
+            Debug.Log("Save SaveData : " + saveFileName);
+            errorDialog.SetErrorText(SaveFIle);
+            errorDialog.Show();
+        }
+        UpdateSaveSlots();
     }
 
     private void UpdateSaveSlots()
@@ -143,7 +181,7 @@ public class SaveLoadManager : MonoBehaviour
             nameInputPanel.Hide();
         }
 
-        SceneManager.Instance.LoadScene("Daytime"); //TODO: 나중에 Tutorial로 바꾸기.
+        CustomSceneManager.Instance.LoadScene(GameManager.Instance.SaveData.lastSceneIndex); //TODO: 나중에 Tutorial로 바꾸기.
     }
 
     private void InitialSaveData(string name)
@@ -151,11 +189,12 @@ public class SaveLoadManager : MonoBehaviour
         GameManager gameManager = GameManager.Instance;
         SaveData saveData = new()
         {
+            saveFileIndex = currentSaveSlotIndex,
             playerName = name,
             currentLocation = "엘더스 지하감옥",
             currentDay = 1,
             dayNight = DayNight.Night,
-            lastSceneIndex = 2, // TODO: 나중에 Tutorial로 바꾸기.
+            lastSceneIndex = 4, // TODO: 나중에 Tutorial로 바꾸기.
             stones = 0,
 
             // Lists
@@ -163,6 +202,7 @@ public class SaveLoadManager : MonoBehaviour
             characterList = new List<CharacterDataWrapper>(),
             stageDataList = new List<StageData>()
         };
+        saveData.flags.Init();
 
         gameManager.SaveData = saveData;
         CharacterData mainCharacter = MakeNewCharacter(name);

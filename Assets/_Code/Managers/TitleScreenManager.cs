@@ -8,12 +8,12 @@ public class TitleScreenManager : MonoBehaviour
     // Texts
     private const string NewGameText = "새로운 게임을 시작합니다.";
     private const string LoadGameText = "이전에 저장한 게임을 불러옵니다.";
-    private const string QuitGameText = "게임의 설정을 변경합니다.";
+    private const string QuitGameText = "게임을 종료합니까.";
 
     public void NewGame()
     {
         GameManager.Instance.state = GameManager.GameState.NewGame;
-        SceneManager.Instance.LoadScene("SaveLoadMenu");
+        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
     }
 
     public void QuitGame()
@@ -25,7 +25,7 @@ public class TitleScreenManager : MonoBehaviour
     public void LoadGame()
     {
         GameManager.Instance.state = GameManager.GameState.LoadGame;
-        SceneManager.Instance.LoadScene("SaveLoadMenu");
+        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
     }
 
     public void Options()

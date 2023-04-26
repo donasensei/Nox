@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,11 +11,11 @@ public class GameManager : MonoBehaviour
         MainMenu,
         NewGame,
         LoadGame,
+        SaveGame,
         DayTime,
         Explore
     }
     public GameState state;
-
 
     // Data
     private readonly string[] saveFileNames = { "sav01", "sav02", "sav03", "sav04" };
@@ -43,8 +45,8 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = frame;
     }
 
-    void Start()
-    {
+    private void Start()
+    { 
         // Set State
         state = GameState.MainMenu;
 
@@ -56,10 +58,32 @@ public class GameManager : MonoBehaviour
         };
     }
 
+
     public DayNight GetDayNight() 
     {
         DayNight daynight = SaveData.dayNight;
         return daynight;
+    }
+
+    public void UpdateCharacterData(CharacterDataWrapper updatedCharacterData)
+    {
+        for (int i = 0; i < SaveData.partyList.Count; i++)
+        {
+            if (SaveData.partyList[i].characterName == updatedCharacterData.characterName)
+            {
+                SaveData.partyList[i] = updatedCharacterData;
+                return;
+            }
+        }
+
+        for (int i = 0; i < SaveData.characterList.Count; i++)
+        {
+            if (SaveData.characterList[i].characterName == updatedCharacterData.characterName)
+            {
+                SaveData.characterList[i] = updatedCharacterData;
+                return;
+            }
+        }
     }
 
     public List<CharacterDataWrapper> ConvertToWrapperList(List<CharacterData> characterDataList)
@@ -83,14 +107,15 @@ public class GameManager : MonoBehaviour
         {
             CharacterData characterData = ScriptableObject.CreateInstance<CharacterData>();
             characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
-            characterData.characterName = wrapper.characterName;
+            characterData.characterDesc = wrapper.characterDesc;
+            characterData.characterImage = wrapper.characterImage;
+            characterData.characterStat = wrapper.characterStat;
+            characterData.currentHealth = wrapper.currentHealth;
+            characterData.currentMana = wrapper.currentMana;
+            characterData.level = wrapper.level;
+            characterData.experience = wrapper.experience;
+            characterData.characterSkill = wrapper.characterSkill;
+            characterData.defaultSkill = wrapper.defaultSkill;
 
             characterDataList.Add(characterData);
         }
@@ -132,6 +157,8 @@ public enum DayNight
 public class SaveData
 {
     // SaveFile Data
+    public int saveFileIndex;
+
     public string playerName;
     public string currentLocation;
     public uint currentDay;
@@ -152,4 +179,30 @@ public class SaveData
     public List<CharacterDataWrapper> partyList;
     // Stage Data List
     public List<StageData> stageDataList;
+
+    // Flags
+    public Flags flags;
+}
+
+[System.Serializable]
+public struct Flags
+{
+    public bool isTutorialStoryDone;
+    public bool isTutorialBattleDone;
+    public bool isTutorialSkillDone;
+    public bool isTutorialExploreBattleDone;
+    public bool isTutorialExploreResourceDone;
+    public bool isTutorialExploreDone;
+    public bool isTutorialDone;
+
+    public void Init()
+    {
+        isTutorialStoryDone = false;
+        isTutorialBattleDone = false;
+        isTutorialSkillDone = false;
+        isTutorialExploreBattleDone = false;
+        isTutorialExploreResourceDone = false;
+        isTutorialExploreDone = false;
+        isTutorialDone = false;
+    }
 }

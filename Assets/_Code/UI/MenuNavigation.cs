@@ -54,28 +54,39 @@ public class MenuNavigation : MonoBehaviour
         }
     }
 
+
     private void FindAndSelectFirstActiveSelectable()
     {
-        GameObject[] uiElements = GameObject.FindGameObjectsWithTag("NavigableUIElement");
+        Selectable[] uiElements = GameObject.FindObjectsOfType<Selectable>();
+
+        if (uiElements.Length == 0)
+        {
+            return;
+        }
 
         int startIndex = -1;
         for (int i = 0; i < uiElements.Length; i++)
         {
-            if (uiElements[i] == currentSelectedUIElement)
+            if (uiElements[i].gameObject == currentSelectedUIElement)
             {
                 startIndex = i;
                 break;
             }
         }
 
+        if (startIndex == -1)
+        {
+            startIndex = 0;
+        }
+
         int index = startIndex;
         do
         {
             index = (index + 1) % uiElements.Length;
-            if (uiElements[index].activeInHierarchy && uiElements[index].GetComponent<Selectable>().interactable)
+            if (uiElements[index].gameObject.activeInHierarchy && uiElements[index].interactable)
             {
-                eventSystem.SetSelectedGameObject(uiElements[index]);
-                currentSelectedUIElement = uiElements[index];
+                eventSystem.SetSelectedGameObject(uiElements[index].gameObject);
+                currentSelectedUIElement = uiElements[index].gameObject;
                 break;
             }
         } while (index != startIndex);

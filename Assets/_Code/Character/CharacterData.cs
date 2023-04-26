@@ -30,6 +30,9 @@ public class CharacterData : ScriptableObject
     [Tooltip("캐릭터 스킬")]
     public List<SkillData> characterSkill = new();
 
+    [Tooltip("기본 캐릭터 기능")]
+    public List<SkillData> defaultSkill = new();
+
     public void UpdateMaxHealthAndMana()
     {
         characterStat.MaxHealth = characterStat.CalculateMaxHealth(level, characterStat.Vitality);
@@ -47,6 +50,7 @@ public struct CharacterStat
     public int Magic; // 마법 공격력 증가
     public int Vitality; // 체력 증가
     public int Blessing; // 회복량 증가
+    public int BonusStat;
 
     public int CalculateMaxHealth(int level, int vitality)
     {
@@ -71,6 +75,7 @@ public class CharacterDataWrapper
     public int level;
     public int experience;
     public List<SkillData> characterSkill;
+    public List<SkillData> defaultSkill;
 
     public CharacterDataWrapper(CharacterData characterData)
     {
@@ -83,6 +88,7 @@ public class CharacterDataWrapper
         level = characterData.level;
         experience = characterData.experience;
         characterSkill = characterData.characterSkill;
+        defaultSkill = characterData.defaultSkill;
     }
 
     public void UpdateMaxHealthAndMana()

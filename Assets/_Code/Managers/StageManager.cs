@@ -8,15 +8,13 @@ public class StageManager : MonoBehaviour
 {
     public StageData StageData;
 
-    [SerializeField] private string stageName;
+    [SerializeField, TextArea] private string stageName;
     public List<Node> nodes;
 
     [SerializeField] private ExploreCharacter player;
 
     // State
     private bool isMoving = false;
-    private bool isVisitBattle = false;
-    private bool isVisitResources = false;
 
     // UI 
     [SerializeField] private LocationIndicator locationIndicator;
@@ -24,24 +22,39 @@ public class StageManager : MonoBehaviour
     [SerializeField] private ErrorDialog errorDialog;
     [SerializeField] private DialogueSystem dialogueSystem;
 
+    // DEBUG
+    public string nextSceneName;
+
     // Texts
     private const string NoneText = "이곳은 아무것도 없습니다.";
-    private const string BattleText = "전투가 시작됩니다.(예정)";
-    private const string GetResourceText = "자원을 얻습니다.(예정)";
     
     // Error Texts
-    private const string NodeTypeErrorText = "유효하지 낳은 노드 타입입니다.";
-
+    private const string NodeTypeErrorText = "유효하지 않은 노드 타입입니다.";
 
     private void Start()
     {
         InitStageData();
+        GameManager.Instance.SaveData.currentLocation = stageName;
+        GameManager.Instance.state = GameManager.GameState.Explore;
 
-        player.currentNode = nodes[0];
-        player.transform.position = nodes[0].transform.position;
-        // HideNode(nodes[0]);
-
-        ShowConnectedNodes(nodes[0]);
+        if (StageData.currentNode != null)
+        {
+            player.currentNode = StageData.currentNode;
+            player.transform.position = StageData.currentNode.transform.position;
+            HideAllNodes();
+            ShowNode(StageData.currentNode);
+            ShowConnectedNodes(StageData.currentNode);
+            TriggerNodeEvent(player);
+        }
+        else
+        {
+            player.currentNode = nodes[0];
+            player.transform.position = nodes[0].transform.position;
+            HideAllNodes();
+            ShowNode(nodes[0]);
+            ShowConnectedNodes(nodes[0]);
+            TriggerNodeEvent(player);
+        }
     }
 
     private void Update()
@@ -65,6 +78,7 @@ public class StageManager : MonoBehaviour
     private void SetCurrentNodeActive()
     {
         Node currentNode = player.currentNode;
+        StageData.currentNode = currentNode;
         currentNode.SetActiveSprites();
     }
 
@@ -93,7 +107,6 @@ public class StageManager : MonoBehaviour
 
             EnableUIInteractions();
 
-
             TriggerNodeEvent(player);
             isMoving = false;
         }
@@ -104,34 +117,31 @@ public class StageManager : MonoBehaviour
         Node currentNode = player.currentNode;
 
         currentNode.visited = true;
+        if(currentNode.InkData != null)
+        {
+            dialogueSystem.StartStory(currentNode.InkData);
+        }
+
         switch (currentNode.nodeType)
         {
             case NodeType.None:
-                errorDialog.SetErrorText(NoneText);
-                errorDialog.Show();
+/*              errorDialog.SetErrorText(NoneText);
+                errorDialog.Show();*/
                 break;
             case NodeType.Battle:
-                //errorDialog.SetErrorText(BattleText);
-                //errorDialog.Show();
-                if(!isVisitBattle)
-                {
-                    isVisitBattle = true;
-                    dialogueSystem.StartStory(0);
-                }
                 break;
             case NodeType.GetResource:
-                //errorDialog.SetErrorText(GetResourceText);
-                //errorDialog.Show();
-                if(!isVisitResources)
-                {
-                    isVisitResources = true;
-                    dialogueSystem.StartStory(1);
-                }
                 break;
             default:
                 errorDialog.SetErrorText(NodeTypeErrorText);
                 errorDialog.Show();
                 break;
+        }
+
+        if (currentNode.connectedNodes.Length <= 0 && nextSceneName != "")
+        {
+            GameManager.Instance.state = GameManager.GameState.MainMenu;
+            CustomSceneManager.Instance.LoadScene(nextSceneName);
         }
     }
 
@@ -232,6 +242,8 @@ public class StageData
 {
     public string stageName;
     public List<Node> nodes;
+
+    public Node currentNode;
 
     public StageData(string stageName, List<Node> nodes)
     {

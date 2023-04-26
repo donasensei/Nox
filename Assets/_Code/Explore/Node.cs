@@ -21,6 +21,9 @@ public class Node : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnt
     public SpriteRenderer NodeSprite;
     public SpriteRenderer NodeLightSprite;
 
+    // Dialogue Data
+    public InkData inkData;
+
     private void Awake()
     {
         stageManager = FindObjectOfType<StageManager>();
@@ -28,6 +31,8 @@ public class Node : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnt
 
         SetInactiveSprites();
     }
+
+    public InkData InkData { get { return inkData; } }
 
     public void SetActiveSprites()
     {

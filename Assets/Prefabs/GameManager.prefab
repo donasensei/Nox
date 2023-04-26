@@ -44,3 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb011dcc215fe449b513535139f5b85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
+  saveData:
+    saveFileIndex: 0
+    playerName: 
+    currentLocation: 
+    currentDay: 0
+    dayNight: 0
+    lastSceneIndex: 0
+    stones: 0
+    characterList: []
+    partyList: []
+    stageDataList: []
+    flags:
+      isTutorialStoryDone: 0
+      isTutorialBattleDone: 0
+      isTutorialSkillDone: 0
+      isTutorialExploreBattleDone: 0
+      isTutorialExploreResourceDone: 0
+      isTutorialExploreDone: 0
+      isTutorialDone: 0
+  escMenuPrefab: {fileID: 8650175623053889591, guid: 997b2047cd1dab24fa1b374ef69865ec,
+    type: 3}
+  frame: 60

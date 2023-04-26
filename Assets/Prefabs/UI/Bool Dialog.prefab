@@ -95,6 +95,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InfoText: {fileID: 5371819489888438316}
   Groups: []
+  confirmButton: {fileID: 8320689393830639550}
+  cancelButton: {fileID: 125860909696416254}
 --- !u!114 &1048800780677470081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,6 +352,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 922f1e75442c67b41847c4cae4412ec1, type: 3}
+--- !u!114 &125860909696416254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2592139287298466862, guid: 922f1e75442c67b41847c4cae4412ec1,
+    type: 3}
+  m_PrefabInstance: {fileID: 2469667107203030480}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1235610375323199053 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3703014634570169245, guid: 922f1e75442c67b41847c4cae4412ec1,
@@ -590,3 +604,15 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &8320689393830639550 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2592139287298466862, guid: 922f1e75442c67b41847c4cae4412ec1,
+    type: 3}
+  m_PrefabInstance: {fileID: 5800678211123729296}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -10,16 +10,19 @@ using UnityEditor.Rendering;
 public class DialogueSystem : MonoBehaviour
 {
     // Ink
-    [SerializeField] private List<InkData> inkDatas;
+    [SerializeField] private InkData inkData;
     private Story currentStory;
     private string currentLine;
-    private int currentInkIdx = 0;
+    // private int currentInkIdx = 0;
 
     // UI
     [SerializeField] private DialogueUI dialogueUI;
 
     // Input
     private InputAction continueAction;
+
+    [SerializeField] private bool startStoryFirst = false;
+    public bool StartStoryFirst { get { return startStoryFirst; } set { startStoryFirst = value; } }
 
     private void Awake()
     {
@@ -39,16 +42,29 @@ public class DialogueSystem : MonoBehaviour
 
     private void Start()
     {
-        // currentStory = inkDatas[0].GetStory();
-        // ShowNextLine();
-        dialogueUI.Hide();
-        continueAction.Disable();
+        if(!startStoryFirst)
+        {
+            dialogueUI.Hide();
+            continueAction.Disable();
+        }
+        else
+        {
+            StartStory();
+        }
     }
 
-    public void StartStory(int idx)
+    public void StartStory()
     {
-        currentInkIdx = idx;
-        currentStory = inkDatas[idx].GetStory();
+        currentStory = inkData.GetStory();
+        dialogueUI.Show();
+        ShowNextLine();
+        continueAction.Enable();
+    }
+
+    public void StartStory(InkData data) 
+    {
+        inkData = data;
+        currentStory = data.GetStory();
         dialogueUI.Show();
         ShowNextLine();
         continueAction.Enable();
@@ -98,15 +114,39 @@ public class DialogueSystem : MonoBehaviour
 
     private void ApplyTag(string tagKey, string tagValue)
     {
+        int parsedValue;
         switch (tagKey)
         {
+            case "BG":
+                if (int.TryParse(tagValue, out parsedValue))
+                {
+                    dialogueUI.SetBackgroundImage(inkData.backgroundImages[parsedValue]);
+                }
+                else
+                {
+                    Debug.LogError("Invalid tag value for 'BG': " + tagValue);
+                }
+                break;
             case "Name":
-                dialogueUI.SetCharacterName(tagValue);
+                if (tagValue == "¡÷¿Œ∞¯")
+                {
+                    dialogueUI.SetCharacterName(GameManager.Instance.SaveData.playerName);
+                }
+                else
+                {
+                    dialogueUI.SetCharacterName(tagValue);
+                }
                 ShowCharacterInfo();
                 break;
             case "Image":
-                int imageIndex = int.Parse(tagValue);
-                dialogueUI.SetCharacterImage(inkDatas[currentInkIdx].characterImages[imageIndex]);
+                if (int.TryParse(tagValue, out parsedValue))
+                {
+                    dialogueUI.SetCharacterImage(inkData.characterImages[parsedValue]);
+                }
+                else
+                {
+                    Debug.LogError("Invalid tag value for 'Image': " + tagValue);
+                }
                 ShowCharacterInfo();
                 break;
             case "Narration":
@@ -114,6 +154,22 @@ public class DialogueSystem : MonoBehaviour
                 break;
             case "EndNarration":
                 ShowCharacterInfo();
+                break;
+            case "Scene":
+                if(GameManager.Instance.state == GameManager.GameState.Explore)
+                {
+                    GameManager.Instance.SaveData.currentDay += 1;
+                    GameManager.Instance.state = GameManager.GameState.MainMenu;
+                }
+                CustomSceneManager.Instance.LoadScene(tagValue);
+                break;
+            case "Stone":
+                Debug.Log("Tag GET");
+                if (int.TryParse(tagValue, out parsedValue))
+                {
+                    Debug.Log(parsedValue);
+                    GameManager.Instance.SaveData.stones += (uint)(parsedValue);
+                }
                 break;
             default:
                 break;

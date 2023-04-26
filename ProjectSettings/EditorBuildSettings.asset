@@ -18,12 +18,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/CharacterEdit.unity
     guid: dc47c9f2fab91e3418469d21e5e9ac6f
   - enabled: 1
-    path: Assets/Scenes/Map/TestMap01.unity
-    guid: d0c56f1b115634947a268a81244cc287
+    path: Assets/Scenes/Story/Intro01.unity
+    guid: c9eec8b55f1a3064084bc41c0d5e8468
   - enabled: 1
-    path: Assets/Scenes/Map/TestMap02.unity
+    path: Assets/Scenes/Map/Explore01.unity
     guid: 8c8fc29f3f1a42d49bc0e6e695a8e426
   - enabled: 1
-    path: Assets/Scenes/Tutorial/Tutorial01.unity
-    guid: 00624d5d8c765f84991a6dbc7975fd18
+    path: Assets/Scenes/Map/Explore02.unity
+    guid: 998cc1ffababcf2419e31167f739db2b
+  - enabled: 1
+    path: Assets/Scenes/Battle/BattleUI.unity
+    guid: b8d1ad2cf5abe3e439ba699b640fbfca
   m_configObjects: {}

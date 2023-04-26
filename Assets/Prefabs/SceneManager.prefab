@@ -44,6 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf4269e04e8cc643a370cc71b7779a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveData:
-    characterList: []
-    partyList: []
+  loadingScreenPrefab: {fileID: 2553570268490958823, guid: f723c0f32a8d9be44bb906eac2aa26c6,
+    type: 3}

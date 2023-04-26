@@ -31,7 +31,6 @@ public enum SkillType
     None,
     Attack,
     Magic, 
-    Heal, 
-    Buff,
-    Debuff
+    Heal,
+    Buff
 }

@@ -15,3 +15,5 @@ MonoBehaviour:
   inkFile: {fileID: 4900000, guid: 84e1f93b20a5e6748b92f0937990aa7f, type: 3}
   characterImages:
   - {fileID: 21300000, guid: e79d5e9f2f3700249b68290cfeb29f5f, type: 3}
+  backgroundImages:
+  - {fileID: 21300000, guid: 0e7fa0c55ff303349b31b6dda5b7f54f, type: 3}

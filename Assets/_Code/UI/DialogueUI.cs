@@ -10,6 +10,7 @@ public class DialogueUI : MonoBehaviour
 
     // Images
     [SerializeField] private Image characterImage;
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private TypingEffect typing;
 
     // UI
@@ -23,6 +24,10 @@ public class DialogueUI : MonoBehaviour
     public void SetCharacterImage(Sprite sprite)
     {
         characterImage.sprite = sprite;
+    }
+    public void SetBackgroundImage(Sprite sprite)
+    {
+        backgroundImage.sprite = sprite;
     }
 
     public void RefreshLine(string dialogue, Action onComplete)
@@ -40,21 +45,30 @@ public class DialogueUI : MonoBehaviour
         return typing.GetIsTyping();
     }
 
+    public void HideBG()
+    {
+        backgroundImage.color = Color.clear;
+        backgroundImage.sprite = null;
+    }
+
+    public void ShowBG()
+    {
+        backgroundImage.color = Color.white;
+        backgroundImage.sprite = null;
+    }
+
     public void HideCharacterImage()
     {
-        //characterImage.color = Color.clear;
         characterBox.gameObject.SetActive(false);
     }
 
     public void HideCharacterName()
     {
-        // characterName.text = null;
         characterName.gameObject.SetActive(false);
     }
 
     public void ShowCharacterImage()
     {
-        //characterImage.color = Color.white;
         characterBox.gameObject.SetActive(true);
     }
 

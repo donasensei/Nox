@@ -12,7 +12,7 @@ public class ExploreButton : MonoBehaviour
 
     private void OnButtonClicked()
     {
-
+        CheckStates();
     }
 
     private void CheckStates()
@@ -22,10 +22,12 @@ public class ExploreButton : MonoBehaviour
         switch(gameManager.SaveData.dayNight)
         {
             case DayNight.Day:
-                SceneManager.Instance.LoadScene(1);
+                GameManager.Instance.SaveData.dayNight = DayNight.Night;
+                CustomSceneManager.Instance.LoadScene("Intro01");
                 break;
             case DayNight.Night:
-                SceneManager.Instance.LoadScene("Day");
+                GameManager.Instance.SaveData.dayNight = DayNight.Day;
+                CustomSceneManager.Instance.LoadScene("Daytime");
                 break;
         }
     }
