@@ -1,42 +1,58 @@
+using System;
+using _Code.UI;
 using UnityEngine;
 
-public class TitleScreenManager : MonoBehaviour
+namespace _Code.Managers
 {
-    [SerializeField] private BoolDialog @bool;
-    [SerializeField] private ErrorDialog @error;
-
-    // Texts
-    private const string NewGameText = "»õ·Î¿î °ÔÀÓÀ» ½ÃÀÛÇÕ´Ï´Ù.";
-    private const string LoadGameText = "ÀÌÀü¿¡ ÀúÀåÇÑ °ÔÀÓÀ» ºÒ·¯¿É´Ï´Ù.";
-    private const string QuitGameText = "°ÔÀÓÀ» Á¾·áÇÕ´Ï±î.";
-
-    public void NewGame()
+    public class TitleScreenManager : MonoBehaviour
     {
-        GameManager.Instance.state = GameManager.GameState.NewGame;
-        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
-    }
+        // UI
+        [SerializeField] private BoolDialog @bool;
+        [SerializeField] private ErrorDialog @error;
 
-    public void QuitGame()
-    {
-        @bool.SetInfoText(QuitGameText);
-        @bool.Show();
-    }
+        // Texts
+        private const string NewGameText = "ìƒˆë¡œìš´ ê²Œì„ì„ ì‹œì‘í•©ë‹ˆë‹¤.";
+        private const string LoadGameText = "ì´ì „ì— ì €ì¥í•œ ê²Œì„ì„ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤.";
+        private const string QuitGameText = "ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆê¹Œ.";
+        
+        // Manager
+        private GameManager _gameManager;
+        private CustomSceneManager _customSceneManager;
 
-    public void LoadGame()
-    {
-        GameManager.Instance.state = GameManager.GameState.LoadGame;
-        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
-    }
+        private void Start()
+        {
+            _gameManager = GameManager.instance;
+            _customSceneManager = CustomSceneManager.instance;
+        }
 
-    public void Options()
-    {
-        Debug.Log("Option Ready Yet");
-        @error.SetErrorText("¿É¼ÇÀº ÀÛ¾÷ ÁßÀÔ´Ï´Ù.");
-        @error.Show();
-    }
+        public void NewGame()
+        {
+            _gameManager.NewGame();
+        }
 
-    public void Quit()
-    {
-        Application.Quit();
+        public void LoadGame()
+        {
+            _gameManager.state = GameState.Load;
+        }
+
+        public void QuitGame()
+        {
+            @bool.SetInfoText(QuitGameText);
+            @bool.Show();
+            @bool.OnConfirm += Application.Quit;
+            @bool.OnCancel += () => { @bool.Hide(); };
+        }
+
+        public void Options()
+        {
+            Debug.Log("Option Ready Yet");
+            @error.SetErrorText("ì˜µì…˜ì€ ì‘ì—… ì¤‘ì…ë‹ˆë‹¤.");
+            @error.Show();
+        }
+
+        public void Quit()
+        {
+            Application.Quit();
+        }
     }
 }

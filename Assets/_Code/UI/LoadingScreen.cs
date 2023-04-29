@@ -1,45 +1,48 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-public class LoadingScreen : MonoBehaviour
+namespace _Code.UI
 {
-    [SerializeField] private Slider progressBar;
-    [SerializeField] private Text loadingText;
-    [SerializeField] private float textUpdateInterval = 0.15f;
-
-    private const string LOADING_TEXT = "¸®¼Ò½º °¡Á®¿À´Â Áß...";
-    private Coroutine loadingTextCoroutine;
-
-    public void SetProgress(float progress)
+    public class LoadingScreen : MonoBehaviour
     {
-        progressBar.value = progress;
-    }
+        [SerializeField] private Slider progressBar;
+        [SerializeField] private Text loadingText;
+        [SerializeField] private float textUpdateInterval = 0.15f;
 
-    private void OnEnable()
-    {
-        if (loadingText != null)
+        private const string LOADING_TEXT = "ë¦¬ì†ŒìŠ¤ ê°€ì ¸ì˜¤ëŠ” ì¤‘...";
+        private Coroutine loadingTextCoroutine;
+
+        public void SetProgress(float progress)
         {
-            loadingTextCoroutine = StartCoroutine(UpdateLoadingText());
+            progressBar.value = progress;
         }
-    }
 
-    private void OnDisable()
-    {
-        if (loadingTextCoroutine != null)
+        private void OnEnable()
         {
-            StopCoroutine(loadingTextCoroutine);
-        }
-    }
-
-    private IEnumerator UpdateLoadingText()
-    {
-        while (true)
-        {
-            for (int i = 1; i <= LOADING_TEXT.Length; i++)
+            if (loadingText != null)
             {
-                loadingText.text = LOADING_TEXT[..i];
-                yield return new WaitForSeconds(textUpdateInterval);
+                loadingTextCoroutine = StartCoroutine(UpdateLoadingText());
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (loadingTextCoroutine != null)
+            {
+                StopCoroutine(loadingTextCoroutine);
+            }
+        }
+
+        private IEnumerator UpdateLoadingText()
+        {
+            while (true)
+            {
+                for (int i = 1; i <= LOADING_TEXT.Length; i++)
+                {
+                    loadingText.text = LOADING_TEXT[..i];
+                    yield return new WaitForSeconds(textUpdateInterval);
+                }
             }
         }
     }

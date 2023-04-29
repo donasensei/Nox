@@ -1,35 +1,32 @@
-using UnityEngine;
-using Ink.Runtime;
 using System.Collections.Generic;
+using _Code.Managers;
+using Ink.Runtime;
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Ink Data", menuName = "Ink Data")]
-public class InkData : ScriptableObject
+namespace _Code.Dialogue
 {
-    public TextAsset inkFile;
-    private Story story;
-    public List<Sprite> characterImages;
-    public List<Sprite> backgroundImages;
-
-    private static HashSet<Story> storiesWithBoundFunctions = new HashSet<Story>();
-
-    public Story GetStory()
+    [CreateAssetMenu(fileName = "New Ink Data", menuName = "Ink Data")]
+    public class InkData : ScriptableObject
     {
-        if (story == null)
+        public TextAsset inkFile;
+        private Story _story;
+        [SerializeField] public List<Sprite> characterImages;
+        [SerializeField] public List<Sprite> backgroundImages;
+
+        public Story GetStory()
         {
-            story = new Story(inkFile.text);
+            if (_story == null)
+            {
+                _story = new Story(inkFile.text);
+            }
+            
+            _story.BindExternalFunction("GetCharacterName", GetCharacterName);
+            return _story;
         }
 
-        if (!storiesWithBoundFunctions.Contains(story))
+        private static string GetCharacterName()
         {
-            story.BindExternalFunction("getCharacterName", () => GetCharacterName());
-            storiesWithBoundFunctions.Add(story);
+            return GameManager.instance.saveData.playerName;
         }
-
-        return story;
-    }
-
-    private string GetCharacterName()
-    {
-        return GameManager.Instance.SaveData.playerName;
     }
 }

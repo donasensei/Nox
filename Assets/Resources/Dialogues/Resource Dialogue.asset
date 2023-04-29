@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: Resource Dialogue
   m_EditorClassIdentifier: 
   inkFile: {fileID: 4900000, guid: aca5ab4016daebb4ba6960916e689d95, type: 3}
-  characterImages:
-  - {fileID: 21300000, guid: de6bc6b9a9dd8f04a957da554feffa6e, type: 3}
-  backgroundImages:
-  - {fileID: 21300000, guid: 0e7fa0c55ff303349b31b6dda5b7f54f, type: 3}
+  characterImages: []
+  backgroundImages: []

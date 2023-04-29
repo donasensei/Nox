@@ -1,25 +1,28 @@
-using Unity.VisualScripting;
+using _Code.Character;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleCharacterInfo : MonoBehaviour
+namespace _Code.UI
 {
-    [SerializeField] private Text characterName;
-    [SerializeField] private Text characterHP;
-    [SerializeField] private Text characterMP;
-    [SerializeField] private Image healthBar;
-    [SerializeField] private Image manaBar;
-
-    public void UpdateInfo(CharacterData data)
+    public class BattleCharacterInfo : MonoBehaviour
     {
-        characterName.text = data.characterName;
+        [SerializeField] private Text characterName;
+        [SerializeField] private Text characterHP;
+        [SerializeField] private Text characterMP;
+        [SerializeField] private Image healthBar;
+        [SerializeField] private Image manaBar;
 
-        float healthPercent = (float)data.currentHealth / data.characterStat.MaxHealth;
-        healthBar.fillAmount = healthPercent;
-        characterHP.text = data.currentHealth.ToString() + "/" + data.characterStat.MaxHealth.ToString();
+        public void UpdateInfo(CharacterData data)
+        {
+            characterName.text = data.characterName;
 
-        float manaPercent = (float)data.currentMana / data.characterStat.MaxMana;
-        manaBar.fillAmount = manaPercent;
-        characterMP.text = data.currentMana.ToString() + "/" + data.characterStat.MaxMana.ToString();
+            float healthPercent = (float)data.currentHealth / data.characterStat.maxHealth;
+            healthBar.fillAmount = healthPercent;
+            characterHP.text = data.currentHealth.ToString() + "/" + data.characterStat.maxHealth.ToString();
+
+            float manaPercent = (float)data.currentMana / data.characterStat.maxMana;
+            manaBar.fillAmount = manaPercent;
+            characterMP.text = data.currentMana.ToString() + "/" + data.characterStat.maxMana.ToString();
+        }
     }
 }

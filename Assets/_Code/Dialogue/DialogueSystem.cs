@@ -1,195 +1,159 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using _Code.Managers;
+using _Code.UI;
 using Ink.Runtime;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Net.NetworkInformation;
-using UnityEditor.Rendering;
 
-
-public class DialogueSystem : MonoBehaviour
+namespace _Code.Dialogue
 {
-    // Ink
-    [SerializeField] private InkData inkData;
-    private Story currentStory;
-    private string currentLine;
-    // private int currentInkIdx = 0;
-
-    // UI
-    [SerializeField] private DialogueUI dialogueUI;
-
-    // Input
-    private InputAction continueAction;
-
-    [SerializeField] private bool startStoryFirst = false;
-    public bool StartStoryFirst { get { return startStoryFirst; } set { startStoryFirst = value; } }
-
-    private void Awake()
+    public class DialogueSystem : MonoBehaviour
     {
-        SetUpInputSystem();
-    }
+        // Ink
+        [SerializeField] private InkData inkData;
+        private Story _currentStory;
+        private string _currentLine;
 
-    private void SetUpInputSystem()
-    {
-        // Set up the Input System
-        continueAction = new InputAction("Continue", InputActionType.Button);
-        continueAction.AddBinding("<Keyboard>/enter");
-        continueAction.AddBinding("<Mouse>/leftButton");
-        continueAction.AddBinding("<Gamepad>/buttonSouth");
-        continueAction.performed += ctx => ContinueWhenNotTyping();
-        continueAction.Enable();
-    }
+        // UI
+        [SerializeField] private DialogueUI dialogueUI;
 
-    private void Start()
-    {
-        if(!startStoryFirst)
+        // Input
+        private InputAction _continueAction;
+
+       // Managers
+        private GameManager _gameManager;
+        
+        // Tags
+        private const string CharacterNameTag = "Name";
+        private const string CharacterImageTag = "Image";
+        private const string BackgroundTag = "BG";
+        private const string NarrationTag = "Narration";
+        private const string EndNarrationTag = "EndNarration";
+
+        private void Awake()
         {
-            dialogueUI.Hide();
-            continueAction.Disable();
+            SetUpInputSystem();
         }
-        else
+
+        private void SetUpInputSystem()
         {
-            StartStory();
+            // Set up the Input System
+            _continueAction = new InputAction("Continue", InputActionType.Button);
+            _continueAction.AddBinding("<Keyboard>/enter");
+            _continueAction.AddBinding("<Mouse>/leftButton");
+            _continueAction.AddBinding("<Gamepad>/buttonSouth");
+            _continueAction.performed += ctx => ContinueWhenNotTyping();
+            _continueAction.Enable();
         }
-    }
 
-    public void StartStory()
-    {
-        currentStory = inkData.GetStory();
-        dialogueUI.Show();
-        ShowNextLine();
-        continueAction.Enable();
-    }
-
-    public void StartStory(InkData data) 
-    {
-        inkData = data;
-        currentStory = data.GetStory();
-        dialogueUI.Show();
-        ShowNextLine();
-        continueAction.Enable();
-    }
-
-    private void ContinueWhenNotTyping()
-    {
-        if (dialogueUI.IsTyping())
+        private void Start()
         {
-            dialogueUI.FinishTyping();
+            _currentStory = inkData.GetStory();
         }
-        else
+        private void StartStory()
         {
+            _currentStory = inkData.GetStory();
+            dialogueUI.Show();
             ShowNextLine();
+            _continueAction.Enable();
         }
-    }
 
-    private void ShowNextLine()
-    {
-        if (currentStory.canContinue)
+        public void StartStory(InkData data) 
         {
-            currentLine = currentStory.Continue();
-            dialogueUI.RefreshLine(currentLine, () => { });
-            ProcessTags();
+            inkData = data;
+            _currentStory = data.GetStory();
+            dialogueUI.Show();
+            ShowNextLine();
+            _continueAction.Enable();
         }
-        else
+
+        private void ContinueWhenNotTyping()
         {
-            // End of the story
-            ShowCharacterInfo();
-            dialogueUI.Hide();
-            continueAction.Disable();
+            if (dialogueUI.IsTyping())
+            {
+                dialogueUI.FinishTyping();
+            }
+            else
+            {
+                ShowNextLine();
+            }
         }
-    }
 
-    private void ProcessTags()
-    {
-        List<string> tags = currentStory.currentTags;
-        foreach (string tag in tags)
+        private void ShowNextLine()
         {
-            string[] splitTag = tag.Split(':');
-            string tagKey = splitTag[0].Trim();
-            string tagValue = splitTag.Length > 1 ? splitTag[1].Trim() : null;
-
-            ApplyTag(tagKey, tagValue);
-        }
-    }
-
-    private void ApplyTag(string tagKey, string tagValue)
-    {
-        int parsedValue;
-        switch (tagKey)
-        {
-            case "BG":
-                if (int.TryParse(tagValue, out parsedValue))
-                {
-                    dialogueUI.SetBackgroundImage(inkData.backgroundImages[parsedValue]);
-                }
-                else
-                {
-                    Debug.LogError("Invalid tag value for 'BG': " + tagValue);
-                }
-                break;
-            case "Name":
-                if (tagValue == "¡÷¿Œ∞¯")
-                {
-                    dialogueUI.SetCharacterName(GameManager.Instance.SaveData.playerName);
-                }
-                else
-                {
-                    dialogueUI.SetCharacterName(tagValue);
-                }
+            if (_currentStory.canContinue)
+            {
+                _currentLine = _currentStory.Continue();
+                dialogueUI.RefreshLine(_currentLine, () => { });
+                ProcessTags();
+            }
+            else
+            {
+                // End of the story
                 ShowCharacterInfo();
-                break;
-            case "Image":
-                if (int.TryParse(tagValue, out parsedValue))
-                {
-                    dialogueUI.SetCharacterImage(inkData.characterImages[parsedValue]);
-                }
-                else
-                {
-                    Debug.LogError("Invalid tag value for 'Image': " + tagValue);
-                }
-                ShowCharacterInfo();
-                break;
-            case "Narration":
-                HideCharacterInfo();
-                break;
-            case "EndNarration":
-                ShowCharacterInfo();
-                break;
-            case "Scene":
-                if(GameManager.Instance.state == GameManager.GameState.Explore)
-                {
-                    GameManager.Instance.SaveData.currentDay += 1;
-                    GameManager.Instance.state = GameManager.GameState.MainMenu;
-                }
-                CustomSceneManager.Instance.LoadScene(tagValue);
-                break;
-            case "Stone":
-                Debug.Log("Tag GET");
-                if (int.TryParse(tagValue, out parsedValue))
-                {
-                    Debug.Log(parsedValue);
-                    GameManager.Instance.SaveData.stones += (uint)(parsedValue);
-                }
-                break;
-            default:
-                break;
+                _currentStory.ResetState();
+                dialogueUI.Hide();
+                _continueAction.Disable();
+            }
         }
-    }
 
-    private void ShowCharacterInfo()
-    {
-        dialogueUI.ShowCharacterImage();
-        dialogueUI.ShowCharacterName();
-    }
+        private void ProcessTags()
+        {
+            var tags = _currentStory.currentTags;
+            foreach (var t in tags)
+            {
+                var splitTag = t.Split(':');
+                var tagKey = splitTag[0].Trim();
+                var tagValue = splitTag.Length > 1 ? splitTag[1].Trim() : null;
 
-    private void HideCharacterInfo()
-    {
-        dialogueUI.HideCharacterImage();
-        dialogueUI.HideCharacterName();
-    }
+                ApplyTag(tagKey, tagValue);
+            }
+        }
 
-    private void OnDestroy()
-    {
-        continueAction.Disable();
+        private void ApplyTag(string tagKey, string tagValue)
+        {
+            switch (tagKey)
+            {
+                case BackgroundTag:
+                    if (int.TryParse(tagKey, out var index))
+                    {
+                        dialogueUI.SetBackgroundImage(inkData.backgroundImages[index]);
+                    }
+                    break;
+                case CharacterNameTag:
+                    dialogueUI.SetCharacterName(tagValue == "Ï£ºÏù∏Í≥µ" ? _gameManager.saveData.playerName : tagValue);
+                    break;
+                case CharacterImageTag:
+                    if(int.TryParse(tagKey, out var imageIndex))
+                    {
+                        dialogueUI.SetCharacterImage(inkData.characterImages[imageIndex]);
+                    }
+                    break;
+                case NarrationTag:
+                    HideCharacterInfo();
+                    break;
+                case EndNarrationTag:
+                    ShowCharacterInfo();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ShowCharacterInfo()
+        {
+            dialogueUI.ShowCharacterImage();
+            dialogueUI.ShowCharacterName();
+        }
+
+        private void HideCharacterInfo()
+        {
+            dialogueUI.HideCharacterImage();
+            dialogueUI.HideCharacterName();
+        }
+
+        private void OnDestroy()
+        {
+            _continueAction.Disable();
+        }
     }
 }

@@ -1,38 +1,41 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueResizer : MonoBehaviour
+namespace _Code.UI
 {
-    public GameObject firstUIObject;
-    public GameObject secondUIObject;
-
-    private LayoutElement firstLayoutElement;
-    private LayoutElement secondLayoutElement;
-
-    void Start()
+    public class DialogueResizer : MonoBehaviour
     {
-        firstLayoutElement = firstUIObject.GetComponent<LayoutElement>();
-        secondLayoutElement = secondUIObject.GetComponent<LayoutElement>();
-    }
+        public GameObject firstUIObject;
+        public GameObject secondUIObject;
 
-    void Update()
-    {
-        if (!firstUIObject.activeInHierarchy)
+        private LayoutElement firstLayoutElement;
+        private LayoutElement secondLayoutElement;
+
+        void Start()
         {
-            secondLayoutElement.flexibleWidth = 1;
-        }
-        else
-        {
-            secondLayoutElement.flexibleWidth = 0;
+            firstLayoutElement = firstUIObject.GetComponent<LayoutElement>();
+            secondLayoutElement = secondUIObject.GetComponent<LayoutElement>();
         }
 
-        if (!secondUIObject.activeInHierarchy)
+        void Update()
         {
-            firstLayoutElement.flexibleWidth = 1;
-        }
-        else
-        {
-            firstLayoutElement.flexibleWidth = 0;
+            if (!firstUIObject.activeInHierarchy)
+            {
+                secondLayoutElement.flexibleWidth = 1;
+            }
+            else
+            {
+                secondLayoutElement.flexibleWidth = 0;
+            }
+
+            if (!secondUIObject.activeInHierarchy)
+            {
+                firstLayoutElement.flexibleWidth = 1;
+            }
+            else
+            {
+                firstLayoutElement.flexibleWidth = 0;
+            }
         }
     }
 }

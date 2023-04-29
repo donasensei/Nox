@@ -1,29 +1,32 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class DayButton : MonoBehaviour, ISelectHandler, IDeselectHandler
+namespace _Code.UI
 {
-    public Text text;
-
-    // Text Colors
-    [SerializeField] private Color normalColor;
-    [SerializeField] private Color selectedColor;
-
-    private void Start()
+    public class DayButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
-        text.color = normalColor;
-    }
+        public Text text;
 
-    // Set the text color to the selected color when the button is selected
-    public void OnSelect(BaseEventData eventData)
-    {
-        text.color = selectedColor;
-    }
+        // Text Colors
+        [SerializeField] private Color normalColor;
+        [SerializeField] private Color selectedColor;
 
-    // Set the text color back to the normal color when the button is deselected
-    public void OnDeselect(BaseEventData eventData)
-    {
-        text.color = normalColor;
+        private void Start()
+        {
+            text.color = normalColor;
+        }
+
+        // Set the text color to the selected color when the button is selected
+        public void OnSelect(BaseEventData eventData)
+        {
+            text.color = selectedColor;
+        }
+
+        // Set the text color back to the normal color when the button is deselected
+        public void OnDeselect(BaseEventData eventData)
+        {
+            text.color = normalColor;
+        }
     }
 }

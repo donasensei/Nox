@@ -1,68 +1,68 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class BoolDialog : MonoBehaviour
+namespace _Code.UI
 {
-    public Text InfoText;
-    [SerializeField] private List<CanvasGroup> Groups;
-
-    [SerializeField] private Button confirmButton;
-    [SerializeField] private Button cancelButton;
-
-    // Events
-    public event Action OnConfirm;
-    public event Action OnCancel;
-
-    private void Awake()
+    public class BoolDialog : MonoBehaviour
     {
-        gameObject.SetActive(false);
-        confirmButton.onClick.AddListener(HandleConfirm);
-        cancelButton.onClick.AddListener(HandleCancel);
-    }
+        [SerializeField] private Text infoText;
+        [SerializeField] private List<CanvasGroup> groups;
+        [SerializeField] private Button confirmButton;
+        [SerializeField] private Button cancelButton;
 
-    public void Show()
-    {
-        foreach (var group in Groups)
+        // Events
+        public event Action OnConfirm;
+        public event Action OnCancel;
+
+        private void Awake()
         {
-            group.interactable = false;
-            group.blocksRaycasts = false;
+            gameObject.SetActive(false);
+            confirmButton.onClick.AddListener(HandleConfirm);
+            cancelButton.onClick.AddListener(HandleCancel);
         }
-        gameObject.SetActive(true);
-    }
 
-    public void Hide()
-    {
-        foreach (var group in Groups)
+        public void Show()
         {
-            group.interactable = true;
-            group.blocksRaycasts = true;
+            foreach (var group in groups)
+            {
+                group.interactable = false;
+            }
+            gameObject.SetActive(true);
         }
-        gameObject.SetActive(false);
-    }
 
-    public void SetInfoText(string text)
-    {
-        InfoText.text = text;
-    }
+        public void Hide()
+        {
+            foreach (var group in groups)
+            {
+                group.interactable = true;
+            }
+            gameObject.SetActive(false);
+        }
 
-    private void HandleConfirm()
-    {
-        OnConfirm?.Invoke();
-        Hide();
-    }
+        public void SetInfoText(string text)
+        {
+            infoText.text = text;
+        }
 
-    private void HandleCancel()
-    {
-        OnCancel?.Invoke();
-        Hide();
-    }
+        private void HandleConfirm()
+        {
+            OnConfirm?.Invoke();
+            Hide();
+        }
 
-    private void OnDestroy()
-    {
-        confirmButton.onClick.RemoveListener(HandleConfirm);
-        cancelButton.onClick.RemoveListener(HandleCancel);
+        private void HandleCancel()
+        {
+            OnCancel?.Invoke();
+            Hide();
+        }
+
+        private void OnDestroy()
+        {
+            confirmButton.onClick.RemoveListener(HandleConfirm);
+            cancelButton.onClick.RemoveListener(HandleCancel);
+        }
     }
 }

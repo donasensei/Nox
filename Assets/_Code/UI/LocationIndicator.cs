@@ -1,29 +1,37 @@
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LocationIndicator : MonoBehaviour
+namespace _Code.UI
 {
-    [SerializeField] private Text locationText;
-    [SerializeField] private Text percentage;
-
-    private void Start()
+    public class LocationIndicator : MonoBehaviour
     {
-        locationText.text = GameManager.Instance.SaveData.currentLocation;
-        percentage.text = "0%";
-    }
+        // UI
+        [SerializeField] private Text locationText;
+        [SerializeField] private Text percentage;
+        
+        // Manager
+        private GameManager _gameManager; 
 
-    private void Update()
-    {
-        locationText.text =  GameManager.Instance.SaveData.currentLocation;
-    }
+        private void Start()
+        {
+            locationText.text = _gameManager.saveData.currentLocation;
+            percentage.text = "0%";
+        }
 
-    public void SetPercentage(int value)
-    {
-        percentage.text = value.ToString() + "%";
-    }
+        private void Update()
+        {
+            // locationText.text =  GameManager.instance.saveData.currentLocation;
+        }
+        
+        public void SetPercentage(int value)
+        {
+            percentage.text = value.ToString() + "%";
+        }
 
-    public void SetLocationText(string location)
-    {
-        locationText.text = location;
+        public void SetLocationText(string location)
+        {
+            locationText.text = location;
+        }
     }
 }

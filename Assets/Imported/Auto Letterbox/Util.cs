@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
-using System;
+using UnityEngine;
 
-namespace AutoLetterbox {
+namespace Imported.Auto_Letterbox {
 
     /* Util.cs
      * 

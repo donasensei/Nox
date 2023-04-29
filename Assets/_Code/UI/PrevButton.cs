@@ -1,19 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PrevButton : MonoBehaviour
+namespace _Code.UI
 {
-    [SerializeField] private Button button;
-
-    private void Awake()
+    public class PrevButton : MonoBehaviour
     {
-        button.onClick.AddListener(OnClick);
-    }
+        [SerializeField] private Button button;
 
-    private void OnClick()
-    {
-        CustomSceneManager.Instance.LoadPreviousScene();
+        private void Awake()
+        {
+            button.onClick.AddListener(OnClick);
+        }
+
+        private void OnClick()
+        {
+            CustomSceneManager.instance.LoadPreviousScene();
+        }
     }
 }

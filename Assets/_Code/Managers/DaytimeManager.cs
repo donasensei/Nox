@@ -1,69 +1,63 @@
-using Ink.Parsed;
+using _Code.Dialogue;
+using _Code.UI;
 using UnityEngine;
 
-public class DaytimeManager : MonoBehaviour
+namespace _Code.Managers
 {
-    [SerializeField] private ErrorDialog errorDialog;
-    [SerializeField] private DialogueSystem diaUI;
-
-    // Texts
-    private const string SkillTreeText = "½ºÅ³ Æ®¸®´Â ÀÛ¾÷ ÁßÀÔ´Ï´Ù.";
-    private const string TownEditText = "¸¶À» ¿î¿µÀº ÀÛ¾÷ ÁßÀÔ´Ï´Ù.";
-
-    [SerializeField] private CanvasGroup[] canvasGroups;
-    private void Start()
+    public class DaytimeManager : MonoBehaviour
     {
-        GameManager.Instance.state = GameManager.GameState.DayTime;
-        GameManager.Instance.SaveData.currentLocation = "µµÀûÀÇ °ÅÁ¡";
-        if(!GameManager.Instance.SaveData.flags.isTutorialDone)
+        [SerializeField] private ErrorDialog errorDialog;
+        [SerializeField] private DialogueSystem diaUI;
+
+        // Texts
+        private const string SkillTreeText = "ìŠ¤í‚¬ íŠ¸ë¦¬ëŠ” ì‘ì—… ì¤‘ì…ë‹ˆë‹¤.";
+        private const string TownEditText = "ë§ˆì„ ìš´ì˜ì€ ì‘ì—… ì¤‘ì…ë‹ˆë‹¤.";
+
+        [SerializeField] private CanvasGroup[] canvasGroups;
+        private void Start()
         {
-            diaUI.StartStoryFirst = true;
-        }    
-        else
-        {
-            diaUI.StartStoryFirst = false;
+
         }
-    }
 
-    private void Update()
-    {
-        if(diaUI.gameObject.activeSelf)
-        { 
-            foreach (var group in canvasGroups)
+        private void Update()
+        {
+            if(diaUI.gameObject.activeSelf)
+            { 
+                foreach (var group in canvasGroups)
+                {
+                    group.interactable = false;
+                }
+            }
+            else
             {
-                group.interactable = false;
+                foreach (var group in canvasGroups)
+                {
+                    group.interactable = true;
+                }
             }
         }
-        else
+
+        public void CharacterEdit()
         {
-            foreach (var group in canvasGroups)
-            {
-                group.interactable = true;
-            }
+            CustomSceneManager.instance.LoadScene("CharacterEdit");
         }
-    }
 
-    public void CharacterEdit()
-    {
-        CustomSceneManager.Instance.LoadScene("CharacterEdit");
-    }
+        public void SkillTree()
+        {
+            // Debug.Log("Skill Tree");
+            errorDialog.SetErrorText(SkillTreeText);
+            errorDialog.Show();
+        }
 
-    public void SkillTree()
-    {
-        // Debug.Log("Skill Tree");
-        errorDialog.SetErrorText(SkillTreeText);
-        errorDialog.Show();
-    }
+        public void TownEdit()
+        {
+            // CustomSceneManager.Instance.LoadScene("BattleUI");
 
-    public void TownEdit()
-    {
-        // CustomSceneManager.Instance.LoadScene("BattleUI");
-        GameManager.Instance.state = GameManager.GameState.SaveGame;
-        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
-    }
+        }
 
-    private void OnDialogHiddenHandler()
-    {
-        errorDialog.OnDialogHidden -= OnDialogHiddenHandler;
+        private void OnDialogHiddenHandler()
+        {
+            errorDialog.OnDialogHidden -= OnDialogHiddenHandler;
+        }
     }
 }

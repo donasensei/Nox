@@ -1,24 +1,28 @@
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StoneIndicator : MonoBehaviour
+namespace _Code.UI
 {
-    public Text text;
-    private GameManager manager;
-
-    private void Start()
+    public class StoneIndicator : MonoBehaviour
     {
-        manager = GameManager.Instance;
-    }
+        [SerializeField] private Text text;
+        private GameManager _gameManager;
+        
+        private void Start()
+        {
+            _gameManager = GameManager.instance;
+        }
+        
+        private void Update()
+        {
+            StoneCounter();
+        }
 
-    private void Update()
-    {
-        StoneCounter();
-    }
-
-    public void StoneCounter()
-    {
-        uint stoneCount = manager.SaveData.stones;
-        text.text = stoneCount.ToString();
+        private void StoneCounter()
+        {
+            var stoneCount = _gameManager.saveData.stones;
+            text.text = stoneCount.ToString();
+        }
     }
 }

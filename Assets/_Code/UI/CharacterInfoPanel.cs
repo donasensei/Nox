@@ -1,155 +1,160 @@
+using _Code.Character;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterInfoPanel : MonoBehaviour
+namespace _Code.UI
 {
-    // Texts
-    [SerializeField] private Text characterNameText;
-    [SerializeField] private Text characterLevelText;
-    [SerializeField] private Text characterExpText;
-    [SerializeField] private Text characterStrengthText;
-    [SerializeField] private Text characterMagicText;
-    [SerializeField] private Text characterBlessText;
-    [SerializeField] private Text characterVitalityText;
-    [SerializeField] private Text healthText;
-    [SerializeField] private Text manaText;
-
-    // Prefab
-    [SerializeField] private SkillInfoPanel skillInfoPanel;
-
-    // Buttons
-    [SerializeField] private Button strPlus;
-    [SerializeField] private Button strMinus;
-    [SerializeField] private Button magPlus;
-    [SerializeField] private Button magMinus;
-    [SerializeField] private Button blessPlus;
-    [SerializeField] private Button blessMinus;
-    [SerializeField] private Button vitPlus;
-    [SerializeField] private Button vitMinus;
-    [SerializeField] private Button levelUpButton;
-
-
-    // Image
-    [SerializeField] private Image healthBar;
-    [SerializeField] private Image manaBar;
-
-    private CharacterDataWrapper characterData;
-
-    private void Awake()
+    public class CharacterInfoPanel : MonoBehaviour
     {
-        strPlus.onClick.AddListener(() => IncreaseStat(ref characterData.characterStat.Strength, characterStrengthText));
-        strMinus.onClick.AddListener(() => DecreaseStat(ref characterData.characterStat.Strength, characterStrengthText));
-        magPlus.onClick.AddListener(() => IncreaseStat(ref characterData.characterStat.Magic, characterMagicText));
-        magMinus.onClick.AddListener(() => DecreaseStat(ref characterData.characterStat.Magic, characterMagicText));
-        blessPlus.onClick.AddListener(() => IncreaseStat(ref characterData.characterStat.Blessing, characterBlessText));
-        blessMinus.onClick.AddListener(() => DecreaseStat(ref characterData.characterStat.Blessing, characterBlessText));
-        vitPlus.onClick.AddListener(() => IncreaseStat(ref characterData.characterStat.Vitality, characterVitalityText));
-        vitMinus.onClick.AddListener(() => DecreaseStat(ref characterData.characterStat.Vitality, characterVitalityText));
+        // Texts
+        [SerializeField] private Text characterNameText;
+        [SerializeField] private Text characterLevelText;
+        [SerializeField] private Text characterExpText;
+        [SerializeField] private Text characterStrengthText;
+        [SerializeField] private Text characterMagicText;
+        [SerializeField] private Text characterBlessText;
+        [SerializeField] private Text characterVitalityText;
+        [SerializeField] private Text healthText;
+        [SerializeField] private Text manaText;
 
-        levelUpButton.onClick.AddListener(LevelUpCharacter);
-    }
+        // Prefab
+        [SerializeField] private SkillInfoPanel skillInfoPanel;
 
-    public void DisplayCharacterInfo(CharacterDataWrapper data)
-    {
-        characterData = data;
+        // Buttons
+        [SerializeField] private Button strPlus;
+        [SerializeField] private Button strMinus;
+        [SerializeField] private Button magPlus;
+        [SerializeField] private Button magMinus;
+        [SerializeField] private Button blessPlus;
+        [SerializeField] private Button blessMinus;
+        [SerializeField] private Button vitPlus;
+        [SerializeField] private Button vitMinus;
+        [SerializeField] private Button levelUpButton;
 
-        // Basic Info
-        characterNameText.text = characterData.characterName;
-        characterLevelText.text = characterData.level.ToString();
-        characterExpText.text = characterData.experience.ToString();
-        characterStrengthText.text = characterData.characterStat.Strength.ToString();
-        characterMagicText.text = characterData.characterStat.Magic.ToString();
-        characterBlessText.text = characterData.characterStat.Blessing.ToString();
-        characterVitalityText.text = characterData.characterStat.Vitality.ToString();
+        // Image
+        [SerializeField] private Image healthBar;
+        [SerializeField] private Image manaBar;
 
-        // Health and Mana
-        float healthPercent = (float)characterData.currentHealth / characterData.characterStat.MaxHealth;
-        healthBar.fillAmount = healthPercent;
-        healthText.text = characterData.currentHealth.ToString() + "/" + characterData.characterStat.MaxHealth.ToString();
+        // Data Container
+        private CharacterDataWrapper _characterData;
         
-        float manaPercent = (float)characterData.currentMana / characterData.characterStat.MaxMana;
-        manaBar.fillAmount = manaPercent;
-        manaText.text = characterData.currentMana.ToString() + "/" + characterData.characterStat.MaxMana.ToString();
+        // Manager
+        private GameManager _gameManager;
 
-        // Skill Field
-        skillInfoPanel.SetupSkillToggles(characterData.characterSkill);
-        levelUpButton.gameObject.SetActive(CanLevelUp());
-        UpdateStatButtons();
-    }
-
-    private void UpdateStatButtons()
-    {
-        bool canIncreaseStat = characterData.characterStat.BonusStat > 0;
-
-        strPlus.gameObject.SetActive(canIncreaseStat);
-        magPlus.gameObject.SetActive(canIncreaseStat);
-        blessPlus.gameObject.SetActive(canIncreaseStat);
-        vitPlus.gameObject.SetActive(canIncreaseStat);
-    }
-
-    public void IncreaseStat(ref int stat, Text statText)
-    {
-        if(characterData.characterStat.BonusStat > 0)
+        private void Awake()
         {
+            strPlus.onClick.AddListener(() => IncreaseStat(ref _characterData.characterStat.strength, characterStrengthText));
+            strMinus.onClick.AddListener(() => DecreaseStat(ref _characterData.characterStat.strength, characterStrengthText));
+            magPlus.onClick.AddListener(() => IncreaseStat(ref _characterData.characterStat.magic, characterMagicText));
+            magMinus.onClick.AddListener(() => DecreaseStat(ref _characterData.characterStat.magic, characterMagicText));
+            blessPlus.onClick.AddListener(() => IncreaseStat(ref _characterData.characterStat.blessing, characterBlessText));
+            blessMinus.onClick.AddListener(() => DecreaseStat(ref _characterData.characterStat.blessing, characterBlessText));
+            vitPlus.onClick.AddListener(() => IncreaseStat(ref _characterData.characterStat.vitality, characterVitalityText));
+            vitMinus.onClick.AddListener(() => DecreaseStat(ref _characterData.characterStat.vitality, characterVitalityText));
+
+            levelUpButton.onClick.AddListener(LevelUpCharacter);
+        }
+
+        public void DisplayCharacterInfo(CharacterDataWrapper data)
+        {
+            _characterData = data;
+
+            // Basic Info
+            characterNameText.text = _characterData.characterName;
+            characterLevelText.text = _characterData.level.ToString();
+            characterExpText.text = _characterData.experience.ToString();
+            characterStrengthText.text = _characterData.characterStat.strength.ToString();
+            characterMagicText.text = _characterData.characterStat.magic.ToString();
+            characterBlessText.text = _characterData.characterStat.blessing.ToString();
+            characterVitalityText.text = _characterData.characterStat.vitality.ToString();
+
+            // Health and Mana
+            var healthPercent = (float)_characterData.currentHealth / _characterData.characterStat.maxHealth;
+            healthBar.fillAmount = healthPercent;
+            healthText.text = _characterData.currentHealth.ToString() + "/" + _characterData.characterStat.maxHealth.ToString();
+        
+            var manaPercent = (float)_characterData.currentMana / _characterData.characterStat.maxMana;
+            manaBar.fillAmount = manaPercent;
+            manaText.text = _characterData.currentMana.ToString() + "/" + _characterData.characterStat.maxMana.ToString();
+
+            // Skill Field
+            skillInfoPanel.SetupSkillToggles(_characterData.characterSkill);
+            levelUpButton.gameObject.SetActive(CanLevelUp());
+            UpdateStatButtons();
+        }
+
+        private void UpdateStatButtons()
+        {
+            bool canIncreaseStat = _characterData.characterStat.bonusStat > 0;
+
+            strPlus.gameObject.SetActive(canIncreaseStat);
+            magPlus.gameObject.SetActive(canIncreaseStat);
+            blessPlus.gameObject.SetActive(canIncreaseStat);
+            vitPlus.gameObject.SetActive(canIncreaseStat);
+        }
+
+        private void IncreaseStat(ref int stat, Text statText)
+        {
+            if (_characterData.characterStat.bonusStat <= 0) return;
             stat++;
-            characterData.characterStat.BonusStat--;
+            _characterData.characterStat.bonusStat--;
             statText.text = stat.ToString();
             UpdateCharacterData();
 
             levelUpButton.gameObject.SetActive(CanLevelUp());
         }
-    }
 
-    public void DecreaseStat(ref int stat, Text statText)
-    {
-        if (stat > 0)
+        private void DecreaseStat(ref int stat, Text statText)
         {
+            if (stat <= 0) return;
             stat--;
             statText.text = stat.ToString();
             UpdateCharacterData();
         }
-    }
 
-    private void UpdateCharacterData()
-    {
-        characterData.characterStat.Strength = int.Parse(characterStrengthText.text);
-        characterData.characterStat.Magic = int.Parse(characterMagicText.text);
-        characterData.characterStat.Blessing = int.Parse(characterBlessText.text);
-        characterData.characterStat.Vitality = int.Parse(characterVitalityText.text);
-
-        GameManager.Instance.UpdateCharacterData(characterData);
-
-        UpdateStatButtons();
-    }
-
-    private bool CanLevelUp()
-    {
-        int requiredStones = CalculateRequiredStonesForLevelUp();
-        return GameManager.Instance.SaveData.stones >= requiredStones;
-    }
-
-    private int CalculateRequiredStonesForLevelUp()
-    {
-        int baseStones = 2;
-        int levelInterval = 3;
-        int additionalStones = Mathf.FloorToInt((characterData.level - 1) / levelInterval);
-        return baseStones * (int)Mathf.Pow(2, additionalStones);
-    }
-
-    private void LevelUpCharacter()
-    {
-        int requiredStones = CalculateRequiredStonesForLevelUp();
-        if (CanLevelUp())
+        private void UpdateCharacterData()
         {
-            characterData.level++;
-            characterData.characterStat.BonusStat += 3;
-            GameManager.Instance.SaveData.stones -= (uint)requiredStones;
+            _characterData.characterStat.strength = int.Parse(characterStrengthText.text);
+            _characterData.characterStat.magic = int.Parse(characterMagicText.text);
+            _characterData.characterStat.blessing = int.Parse(characterBlessText.text);
+            _characterData.characterStat.vitality = int.Parse(characterVitalityText.text);
 
-            characterLevelText.text = characterData.level.ToString();
-            UpdateCharacterData();
+            GameManager.instance.UpdateCharacterData(_characterData);
+
+            UpdateStatButtons();
         }
 
-        // Recheck if there are enough stones for leveling up after leveling up
-        levelUpButton.gameObject.SetActive(CanLevelUp());
+        private bool CanLevelUp()
+        {
+            var requiredStones = CalculateRequiredStonesForLevelUp();
+            return _gameManager.saveData.stones >= requiredStones;
+        }
+
+        private int CalculateRequiredStonesForLevelUp()
+        {
+            const int baseStones = 2;
+            const int levelInterval = 3;
+            // ReSharper disable once PossibleLossOfFraction
+            var additionalStones = Mathf.FloorToInt((_characterData.level - 1) / levelInterval);
+            return baseStones * (int)Mathf.Pow(2, additionalStones);
+        }
+
+        private void LevelUpCharacter()
+        {
+            var requiredStones = CalculateRequiredStonesForLevelUp();
+            if (CanLevelUp())
+            {
+                _characterData.level++;
+                _characterData.characterStat.bonusStat += 3;
+                _gameManager.saveData.stones -= (uint)requiredStones;
+
+                characterLevelText.text = _characterData.level.ToString();
+                UpdateCharacterData();
+            }
+
+            // Check Level Up Availability
+            levelUpButton.gameObject.SetActive(CanLevelUp());
+        }
     }
 }

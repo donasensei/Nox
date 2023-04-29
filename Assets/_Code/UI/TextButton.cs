@@ -1,18 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class TextButton : MonoBehaviour, ISelectHandler, IDeselectHandler
+namespace _Code.UI
 {
-    public GameObject activatedObject;
-
-    public void OnSelect(BaseEventData eventData)
+    public class TextButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
-        activatedObject.SetActive(true);
-    }
+        public GameObject activatedObject;
 
-    public void OnDeselect(BaseEventData eventData)
-    {
-        activatedObject.SetActive(false);
+        public void OnSelect(BaseEventData eventData)
+        {
+            activatedObject.SetActive(true);
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            activatedObject.SetActive(false);
+        }
     }
 }

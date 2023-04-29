@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using AutoLetterbox;
+using Imported.Auto_Letterbox;
 
 namespace AutoLetterbox
 {

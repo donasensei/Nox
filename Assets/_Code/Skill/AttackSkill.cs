@@ -1,45 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Code.Character;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Attack Skill", menuName = "Skill/New Attack Skill")]
-public class AttackSkill : SkillData
+namespace _Code.Skill
 {
-    [Tooltip("½ºÅ³ °ø°Ý·Â")]
-    public int skillDamage;
-
-    [Tooltip("º¸³Ê½º ½ºÅ³ È¿°ú")]
-    public AttackSkillBonus attackSkillBonus;
-
-    AttackSkill() 
+    [CreateAssetMenu(fileName = "New Attack Skill", menuName = "Skill/New Attack Skill")]
+    public class AttackSkill : SkillData
     {
-        skillType = SkillType.Attack;
+        [Tooltip("ìŠ¤í‚¬ ê³µê²©ë ¥")]
+        public int skillDamage;
+
+        private AttackSkill() 
+        {
+            skillType = SkillType.Attack;
+        }
+
+        // Methods
+        public override void UseSkill(CharacterData user, CharacterData target, int time)
+        {
+            Debug.Log("Use Skill" + this.skillName);
+            
+            var timeMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
+            var damageMultiplier = user.GetDamageMultiplier();
+            var damage = user.characterStat.strength * damageMultiplier * timeMultiplier;
+            
+            target.TakeDamage((int)damage);
+        }
     }
-
-    // Methods
-    public override void UseSkill(CharacterData user, CharacterData target)
-    {
-        Debug.Log("Use Skill" + this.skillName);
-
-        int damage = skillDamage;
-        damage = Mathf.RoundToInt((user.characterStat.Magic * 0.3f) * damage);
-        target.currentHealth -= damage;
-    }
-
-    private void IncreaseStrength(CharacterData user)
-    {
-        user.characterStat.Strength += 1;
-    }
-
-    private void IncreaseHealth(CharacterData user)
-    {
-        user.characterStat.Vitality += 1;
-    }
-}
-
-public enum AttackSkillBonus
-{
-    None,
-    IncreaseStrength,
-    IncreaseHealth
 }

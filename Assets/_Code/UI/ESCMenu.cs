@@ -1,66 +1,69 @@
-using System.Collections;
 using System.Collections.Generic;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ESCMenu : MonoBehaviour
+namespace _Code.UI
 {
-    [SerializeField] private Button saveButton;
-    [SerializeField] private Button loadButton;
-    [SerializeField] private Button quitButton;
-
-    [SerializeField] private BoolDialog @bool;
-
-    private const string quitText = "∞‘¿”¿ª ¡æ∑·«œΩ√∞⁄Ω¿¥œ±Ó?";
-
-    private List<CanvasGroup> canvasGroups = new();
-
-    private void Start()
+    public class ESCMenu : MonoBehaviour
     {
-        saveButton.onClick.AddListener(Save);
-        loadButton.onClick.AddListener(Load);
-        quitButton.onClick.AddListener(Quit);
+        [SerializeField] private Button saveButton;
+        [SerializeField] private Button loadButton;
+        [SerializeField] private Button quitButton;
 
-        this.gameObject.SetActive(false);
-    }
+        [SerializeField] private BoolDialog @bool;
 
-    private void OnEnable()
-    {
-        canvasGroups.AddRange(FindObjectsOfType<CanvasGroup>());
+        private const string quitText = "Í≤åÏûÑÏùÑ Ï¢ÖÎ£åÌïòÏãúÍ≤†ÏäµÎãàÍπå?";
 
-        foreach (var canvasGroup in canvasGroups)
+        private List<CanvasGroup> canvasGroups = new();
+
+        private void Start()
         {
-            canvasGroup.interactable = false;
-        }
-    }
+            /*saveButton.onClick.AddListener(Save);
+            loadButton.onClick.AddListener(Load);*/
+            quitButton.onClick.AddListener(Quit);
 
-    private void OnDisable()
-    {
-        foreach (var canvasGroup in canvasGroups)
-        {
-            canvasGroup.interactable = true;
+            this.gameObject.SetActive(false);
         }
 
-        canvasGroups.Clear();
-    }
+        private void OnEnable()
+        {
+            canvasGroups.AddRange(FindObjectsOfType<CanvasGroup>());
 
-    private void Save()
-    {
-        GameManager.Instance.state = GameManager.GameState.SaveGame;
-        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
-    }
+            foreach (var canvasGroup in canvasGroups)
+            {
+                canvasGroup.interactable = false;
+            }
+        }
 
-    private void Load()
-    {
-        GameManager.Instance.state = GameManager.GameState.LoadGame;
-        CustomSceneManager.Instance.LoadScene("SaveLoadMenu");
-    }
+        private void OnDisable()
+        {
+            foreach (var canvasGroup in canvasGroups)
+            {
+                canvasGroup.interactable = true;
+            }
 
-    private void Quit()
-    {
-        @bool.SetInfoText(quitText);
-        @bool.Show();
-        @bool.OnConfirm += Application.Quit;
-        @bool.OnCancel += () => { @bool.Hide(); };
+            canvasGroups.Clear();
+        }
+
+        /*private void Save()
+        {
+            GameManager.instance.state = GameState.SaveGame;
+            CustomSceneManager.instance.LoadScene("SaveLoadMenu");
+        }
+
+        private void Load()
+        {
+            GameManager.instance.state = GameState.LoadGame;
+            CustomSceneManager.instance.LoadScene("SaveLoadMenu");
+        }*/
+
+        private void Quit()
+        {
+            @bool.SetInfoText(quitText);
+            @bool.Show();
+            @bool.OnConfirm += Application.Quit;
+            @bool.OnCancel += () => { @bool.Hide(); };
+        }
     }
 }

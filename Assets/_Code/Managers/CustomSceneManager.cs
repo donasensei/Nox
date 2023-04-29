@@ -1,82 +1,61 @@
-using System.Collections;
 using System.Collections.Generic;
+using _Code.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CustomSceneManager : MonoBehaviour
+namespace _Code.Managers
 {
-    [SerializeField] private float minimumLoadingTime = 0.5f;
-    [SerializeField] private LoadingScreen loadingScreenPrefab;
-    private LoadingScreen loadingScreenInstance;
-
-    // Singleton
-    public static CustomSceneManager Instance { get; private set; }
-
-    // Stack
-    private Stack<int> sceneHistory;
-
-    private void Awake()
+    public class CustomSceneManager : MonoBehaviour
     {
-        // Singleton setup
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            sceneHistory = new Stack<int>();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+        private LoadingScreen _loadingScreenInstance;
 
-    private void ShowLoadingScreen(bool show)
-    {
-        if (show)
+        // Singleton
+        public static CustomSceneManager instance { get; private set; }
+
+        // Stack
+        private Stack<int> _sceneHistory;
+
+        private void Awake()
         {
-            if (loadingScreenInstance == null)
+            // Singleton setup
+            if (instance == null)
             {
-                loadingScreenInstance = Instantiate(loadingScreenPrefab);
-                DontDestroyOnLoad(loadingScreenInstance.gameObject);
+                instance = this;
+                DontDestroyOnLoad(gameObject);
+                _sceneHistory = new Stack<int>();
+            }
+            else
+            {
+                Destroy(gameObject);
             }
         }
-        else
+
+        // Load scene by index
+        public void LoadScene(int sceneIndex)
         {
-            if (loadingScreenInstance != null)
-            {
-                Destroy(loadingScreenInstance.gameObject);
-                loadingScreenInstance = null;
-            }
+            // Store the current scene index in the stack
+            _sceneHistory.Push(SceneManager.GetActiveScene().buildIndex);
+
+            // Load the requested scene
+            SceneManager.LoadScene(sceneIndex);
         }
-    }
 
-    // Load scene by index
-    public void LoadScene(int sceneIndex)
-    {
-        // Store the current scene index in the stack
-        sceneHistory.Push(SceneManager.GetActiveScene().buildIndex);
-
-        // Load the requested scene
-        SceneManager.LoadScene(sceneIndex);
-    }
-
-    // Load scene by name
-    public void LoadScene(string sceneName)
-    {
-        // Store the current scene index in the stack
-        sceneHistory.Push(SceneManager.GetActiveScene().buildIndex);
-
-        // Load the requested scene
-        SceneManager.LoadScene(sceneName);
-    }
-
-    // Load the previous scene
-    public void LoadPreviousScene()
-    {
-        if (sceneHistory.Count > 0)
+        // Load scene by name
+        public void LoadScene(string sceneName)
         {
+            // Store the current scene index in the stack
+            _sceneHistory.Push(SceneManager.GetActiveScene().buildIndex);
+
+            // Load the requested scene
+            SceneManager.LoadScene(sceneName);
+        }
+
+        // Load the previous scene
+        public void LoadPreviousScene()
+        {
+            if (_sceneHistory.Count <= 0) return;
             // Pop the last scene index from the stack and load the scene
-            int previousSceneIndex = sceneHistory.Pop();
+            var previousSceneIndex = _sceneHistory.Pop();
             SceneManager.LoadScene(previousSceneIndex);
         }
     }

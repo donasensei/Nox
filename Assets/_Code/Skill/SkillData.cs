@@ -1,36 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Code.Character;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class SkillData : ScriptableObject
+namespace _Code.Skill
 {
-    [Tooltip("½ºÅ³ ÀÌ¸§")]
-    public string skillName;
-
-    [Tooltip("½ºÅ³ ÀÌ¹ÌÁö")]
-    public Sprite skillImage;
-
-    [Tooltip("½ºÅ³ ¼³¸í"), TextArea]
-    public string skillDesc;
-
-    [Tooltip("½ºÅ³ Å¸ÀÔ")]
-    public SkillType skillType;
-
-    [Tooltip("½ºÅ³ ÄÚ½ºÆ®")]
-    public int skillCost;
-
-    // Methods
-    public virtual void UseSkill(CharacterData user, CharacterData target)
+    public class SkillData : ScriptableObject
     {
-        Debug.Log("Use Skill" + this.skillName);
-    }
-}
+        [Tooltip("ìŠ¤í‚¬ ì´ë¦„")]
+        public string skillName;
 
-public enum SkillType
-{
-    None,
-    Attack,
-    Magic, 
-    Heal,
-    Buff
+        [Tooltip("ìŠ¤í‚¬ ì´ë¯¸ì§€")]
+        public Sprite skillImage;
+
+        [Tooltip("ìŠ¤í‚¬ ì„¤ëª…"), TextArea]
+        public string skillDesc;
+
+        [Tooltip("ìŠ¤í‚¬ íƒ€ì…")]
+        public SkillType skillType;
+
+        [Tooltip("ìŠ¤í‚¬ ì½”ìŠ¤íŠ¸")]
+        public int skillCost;
+
+        // Methods
+        public virtual void UseSkill(CharacterData user, CharacterData target, int time)
+        {
+            Debug.Log("Use Skill" + this.skillName);
+        }
+    }
+
+    public enum SkillType
+    {
+        None,
+        Attack,
+        Magic, 
+        Heal,
+        Buff
+    }
 }

@@ -1,8 +1,11 @@
 using UnityEngine.EventSystems;
 
-public interface ISelectableElement
+namespace _Code.Interface
 {
-    void OnNavigatePerformed(AxisEventData axisEventData);
-    void OnSubmitPerformed(BaseEventData eventData);
-    void OnCancelPerformed(BaseEventData eventData);
+    public interface ISelectableElement
+    {
+        void OnNavigatePerformed(AxisEventData axisEventData);
+        void OnSubmitPerformed(BaseEventData eventData);
+        void OnCancelPerformed(BaseEventData eventData);
+    }
 }

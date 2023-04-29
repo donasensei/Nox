@@ -1,34 +1,23 @@
+using System;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExploreButton : MonoBehaviour
+namespace _Code.UI
 {
-    public Button button;
-
-    private void Start()
+    public class ExploreButton : MonoBehaviour
     {
-        button.onClick.AddListener(OnButtonClicked);
-    }
+        [SerializeField] private Button button;
+        private static GameManager _gameManager;
 
-    private void OnButtonClicked()
-    {
-        CheckStates();
-    }
-
-    private void CheckStates()
-    {
-        GameManager gameManager = GameManager.Instance;
-
-        switch(gameManager.SaveData.dayNight)
+        private void Start()
         {
-            case DayNight.Day:
-                GameManager.Instance.SaveData.dayNight = DayNight.Night;
-                CustomSceneManager.Instance.LoadScene("Intro01");
-                break;
-            case DayNight.Night:
-                GameManager.Instance.SaveData.dayNight = DayNight.Day;
-                CustomSceneManager.Instance.LoadScene("Daytime");
-                break;
+            button.onClick.AddListener(OnButtonClicked);
+        }
+
+        private static void OnButtonClicked()
+        {
+            Debug.Log("Explore button clicked");
         }
     }
 }

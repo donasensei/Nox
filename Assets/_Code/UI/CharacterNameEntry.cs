@@ -1,14 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 // using TMPro;
 
-public class CharacterNameEntry : MonoBehaviour
+namespace _Code.UI
 {
-    // [SerializeField] private TMP_Text characterNameText;
-    [SerializeField] private Text characterNameText;
-
-    public void SetCharacterName(string name)
+    public class CharacterNameEntry : MonoBehaviour
     {
-        characterNameText.text = name;
+        // [SerializeField] private TMP_Text characterNameText;
+        [SerializeField] private Text characterNameText;
+
+        public void SetCharacterName(string name)
+        {
+            characterNameText.text = name;
+        }
     }
 }

@@ -1,35 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using _Code.Character;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterButton : MonoBehaviour
+namespace _Code.UI
 {
-    // [SerializeField] private Button button;
-    [SerializeField] private Toggle toggle;
-    [SerializeField] private Text buttonText;
-
-    private CharacterDataWrapper characterDataWrapper;
-    private CharacterInfoPanel characterInfoPanel;
-
-    public CharacterDataWrapper CharacterData => characterDataWrapper;
-
-    public void Initialize(CharacterDataWrapper characterDataWrapper, CharacterInfoPanel characterInfoPanel, Color textColor)
+    public class CharacterButton : MonoBehaviour
     {
-        this.characterDataWrapper = characterDataWrapper;
-        this.characterInfoPanel = characterInfoPanel;
+        // [SerializeField] private Button button;
+        [SerializeField] private Toggle toggle;
+        [SerializeField] private Text buttonText;
 
-        buttonText.text = characterDataWrapper.characterName;
-        buttonText.color = textColor;
-        toggle.onValueChanged.AddListener(OnToggleValueChanged);
-    }
+        private CharacterDataWrapper characterDataWrapper;
+        private CharacterInfoPanel characterInfoPanel;
 
-    private void OnToggleValueChanged(bool isOn)
-    {
-        if (isOn)
+        public CharacterDataWrapper CharacterData => characterDataWrapper;
+
+        public void Initialize(CharacterDataWrapper characterDataWrapper, CharacterInfoPanel characterInfoPanel, Color textColor)
         {
-            characterInfoPanel.DisplayCharacterInfo(characterDataWrapper);
+            this.characterDataWrapper = characterDataWrapper;
+            this.characterInfoPanel = characterInfoPanel;
+
+            buttonText.text = characterDataWrapper.characterName;
+            buttonText.color = textColor;
+            toggle.onValueChanged.AddListener(OnToggleValueChanged);
+        }
+
+        private void OnToggleValueChanged(bool isOn)
+        {
+            if (isOn)
+            {
+                characterInfoPanel.DisplayCharacterInfo(characterDataWrapper);
+            }
         }
     }
 }

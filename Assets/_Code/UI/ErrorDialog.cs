@@ -4,65 +4,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ErrorDialog : MonoBehaviour
+namespace _Code.UI
 {
-    private const float Delay = 1.0f;
-    [SerializeField] private Text errorText;
-    public List<CanvasGroup> Groups;
-
-    public Action OnDialogHidden;
-
-    private void Awake()
+    public class ErrorDialog : MonoBehaviour
     {
-        gameObject.SetActive(false);
-    }
+        private const float Delay = 1.0f;
+        [SerializeField] private Text errorText;
+        public List<CanvasGroup> Groups;
 
-    private void Update()
-    {
-        /*
+        public Action OnDialogHidden;
+
+        private void Awake()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void Update()
+        {
+            /*
         if (Input.GetMouseButtonDown(0) || Input.anyKeyDown)
         {
             OnInputDetected();
         }
         */
-    }
-
-    private void OnInputDetected()
-    {
-        StartCoroutine(HideAfterDelay(delay: Delay));
-    }
-
-    private IEnumerator HideAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Hide();
-    }
-
-    public void Show()
-    {
-        foreach (var group in Groups)
-        {
-            group.interactable = false;
-            group.blocksRaycasts = false;
         }
-        gameObject.SetActive(true);
-        StartCoroutine(HideAfterDelay(delay: Delay));
-    }
 
-    public void Hide()
-    {
-        foreach (var group in Groups)
+        private void OnInputDetected()
         {
-            group.interactable = true;
-            group.blocksRaycasts = true;
+            StartCoroutine(HideAfterDelay(delay: Delay));
         }
-        gameObject.SetActive(false);
 
-        OnDialogHidden?.Invoke(); // Invoke the event after hiding the dialog
-    }
+        private IEnumerator HideAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Hide();
+        }
 
-    public void SetErrorText(string text)
-    {
-        errorText.text = text;
+        public void Show()
+        {
+            foreach (var group in Groups)
+            {
+                group.interactable = false;
+                group.blocksRaycasts = false;
+            }
+            gameObject.SetActive(true);
+            StartCoroutine(HideAfterDelay(delay: Delay));
+        }
+
+        public void Hide()
+        {
+            foreach (var group in Groups)
+            {
+                group.interactable = true;
+                group.blocksRaycasts = true;
+            }
+            gameObject.SetActive(false);
+
+            OnDialogHidden?.Invoke(); // Invoke the event after hiding the dialog
+        }
+
+        public void SetErrorText(string text)
+        {
+            errorText.text = text;
+        }
     }
 }

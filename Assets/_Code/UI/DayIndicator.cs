@@ -1,26 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DayIndicator : MonoBehaviour
+namespace _Code.UI
 {
-    public Text text;
-    private GameManager manager;
-
-    private void Start()
+    public class DayIndicator : MonoBehaviour
     {
-        manager = GameManager.Instance;
-    }
+        public Text text;
+        private GameManager _gameManager;
 
-    private void Update()
-    {
-        DayCounter();
-    }
+        private void Start()
+        {
+            _gameManager = GameManager.instance;
+        }
 
-    public void DayCounter()
-    {
-        uint dayCount = manager.SaveData.currentDay;
-        text.text = "Day\n" + dayCount.ToString();
+        private void Update()
+        {
+            DayCounter();
+        }
+
+        private void DayCounter()
+        {
+            var dayCount = _gameManager.saveData.currentDay;
+            text.text = "Day\n" + dayCount;
+        }
     }
 }

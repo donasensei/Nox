@@ -15,9 +15,9 @@ MonoBehaviour:
   settings:
     _location: 0
     path: SaveFile.es3
-    encryptionType: 1
+    encryptionType: 0
     compressionType: 0
-    encryptionPassword: NOX
+    encryptionPassword: password
     directory: 0
     format: 0
     prettyPrint: 1
@@ -40,10 +40,10 @@ MonoBehaviour:
     - Ink-Libraries
     - PPv2URPConverters
     - PsdPlugin
-    showAdvancedSettings: 1
+    showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1
   addAllPrefabsToManager: 1
   logDebugInfo: 0
-  logWarnings: 1
-  logErrors: 1
+  logWarnings: 0
+  logErrors: 0

@@ -1,102 +1,106 @@
 using System.Collections.Generic;
+using _Code.Dialogue;
+using _Code.Managers;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
+using UnityEngine.UI;
 
-public class Node : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
+namespace _Code.Explore
 {
-    public Button button;
-
-    public Node[] connectedNodes;
-    public NodeType nodeType;
-    public bool visited;
-
-    private StageManager stageManager;
-
-    // Sprites
-    public List<Sprite> activeSprites;
-    public List<Sprite> inactiveSprites;
-
-    public SpriteRenderer NodeSprite;
-    public SpriteRenderer NodeLightSprite;
-
-    // Dialogue Data
-    public InkData inkData;
-
-    private void Awake()
+    public class Node : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        stageManager = FindObjectOfType<StageManager>();
-        button.onClick.AddListener(() => stageManager.OnNodeClicked(this));
+        public Button button;
 
-        SetInactiveSprites();
-    }
+        public Node[] connectedNodes;
+        public NodeType nodeType;
+        public bool visited;
 
-    public InkData InkData { get { return inkData; } }
+        private StageManager stageManager;
 
-    public void SetActiveSprites()
-    {
-        NodeSprite.sprite = activeSprites[0];
-        NodeLightSprite.sprite = activeSprites[1];
-    }
+        // Sprites
+        public List<Sprite> activeSprites;
+        public List<Sprite> inactiveSprites;
 
-    public void SetInactiveSprites()
-    {
-        NodeSprite.sprite = inactiveSprites[0];
-        NodeLightSprite.sprite = inactiveSprites[1];
-    }
+        public SpriteRenderer NodeSprite;
+        public SpriteRenderer NodeLightSprite;
 
-    public void SetVisited()
-    {
-        visited = true;
-    }
+        // Dialogue Data
+        public InkData inkData;
 
-    public void SetUnvisited()
-    {
-        visited = false;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (!visited)
+        private void Awake()
         {
-            SetActiveSprites();
-        }
-    }
+            stageManager = FindObjectOfType<StageManager>();
+            button.onClick.AddListener(() => stageManager.OnNodeClicked(this));
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (!visited)
-        {
             SetInactiveSprites();
         }
-    }
 
-    public void OnSelect(BaseEventData eventData)
-    {
-        if (!visited)
+        public InkData InkData { get { return inkData; } }
+
+        public void SetActiveSprites()
         {
-            SetActiveSprites();
+            NodeSprite.sprite = activeSprites[0];
+            NodeLightSprite.sprite = activeSprites[1];
+        }
+
+        public void SetInactiveSprites()
+        {
+            NodeSprite.sprite = inactiveSprites[0];
+            NodeLightSprite.sprite = inactiveSprites[1];
+        }
+
+        public void SetVisited()
+        {
+            visited = true;
+        }
+
+        public void SetUnvisited()
+        {
+            visited = false;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!visited)
+            {
+                SetActiveSprites();
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!visited)
+            {
+                SetInactiveSprites();
+            }
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            if (!visited)
+            {
+                SetActiveSprites();
+            }
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            if (!visited)
+            {
+                SetInactiveSprites();
+            }
+        }
+
+        private void OnEnable()
+        {
+            button.navigation = new Navigation { mode = Navigation.Mode.None };
         }
     }
 
-    public void OnDeselect(BaseEventData eventData)
+    public enum NodeType
     {
-        if (!visited)
-        {
-            SetInactiveSprites();
-        }
+        None,
+        Battle,
+        GetResource
     }
-
-    private void OnEnable()
-    {
-        button.navigation = new Navigation { mode = Navigation.Mode.None };
-    }
-}
-
-public enum NodeType
-{
-    None,
-    Battle,
-    GetResource
 }

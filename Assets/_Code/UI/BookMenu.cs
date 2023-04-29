@@ -1,49 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BookMenu : MonoBehaviour
+namespace _Code.UI
 {
-    public GameObject characterMenu;
-    public RectTransform spawnPoint;
-    public Toggle toggle;
-
-    private GameObject currentInstance;
-
-    private void Start()
+    public class BookMenu : MonoBehaviour
     {
-        toggle.onValueChanged.AddListener(OnToggleValueChanged);
-    }
+        public GameObject characterMenu;
+        public RectTransform spawnPoint;
+        public Toggle toggle;
 
-    private void OnToggleValueChanged(bool isOn)
-    {
-        if (isOn)
+        private GameObject _currentInstance;
+
+        private void Start()
         {
-            SpawnCharacterMenu();
+            toggle.onValueChanged.AddListener(OnToggleValueChanged);
         }
-        else
-        {
-            DeletePrefab();
-        }
-    }
 
-    private void SpawnCharacterMenu()
-    {
-        if(characterMenu != null && spawnPoint != null)
+        private void OnToggleValueChanged(bool isOn)
         {
-            currentInstance = Instantiate(characterMenu, spawnPoint.position, spawnPoint.rotation, spawnPoint);
-            RectTransform rectTransform = currentInstance.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.localScale = Vector3.one;
+            if (isOn)
+            {
+                SpawnCharacterMenu();
+            }
+            else
+            {
+                DeletePrefab();
+            }
         }
-    }
 
-    private void DeletePrefab()
-    {
-        if (currentInstance != null)
+        private void SpawnCharacterMenu()
         {
-            Destroy(currentInstance);
+            if(characterMenu != null && spawnPoint != null)
+            {
+                _currentInstance = Instantiate(characterMenu, spawnPoint.position, spawnPoint.rotation, spawnPoint);
+                RectTransform rectTransform = _currentInstance.GetComponent<RectTransform>();
+                rectTransform.anchoredPosition = Vector2.zero;
+                rectTransform.localScale = Vector3.one;
+            }
+        }
+
+        private void DeletePrefab()
+        {
+            if (_currentInstance != null)
+            {
+                Destroy(_currentInstance);
+            }
         }
     }
 }

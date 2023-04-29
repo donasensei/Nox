@@ -1,21 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TitleButton : MonoBehaviour
+namespace _Code.UI
 {
-    public Button LoadButton;
-
-    private void Start()
+    public class TitleButton : MonoBehaviour
     {
-        if (!GameManager.Instance.CheckSaveFileExist)
+        public Button LoadButton;
+
+        private void Start()
         {
-            LoadButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            LoadButton.gameObject.SetActive(true);
+            if (!GameManager.checkSaveFileExist)
+            {
+                LoadButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                LoadButton.gameObject.SetActive(true);
+            }
         }
     }
 }
