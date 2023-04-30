@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _Code.Skill
 {
-    [CreateAssetMenu(fileName = "New MAgic Skill", menuName = "Skill/New Magic Skill")]
+    [CreateAssetMenu(fileName = "New Magic Skill", menuName = "Skill/New Magic Skill")]
     public class MagicSkill : SkillData
     {
         [Tooltip("스킬 공격력")]
@@ -18,9 +18,16 @@ namespace _Code.Skill
         public override void UseSkill(CharacterData user, CharacterData target, int time)
         {
             Debug.Log("Use Skill" + this.skillName);
-            var damageMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
-            var damage = user.characterStat.magic * damageMultiplier;
-                
+            
+            var timeMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
+            var damageMultiplier = user.GetDamageMultiplier();
+            var damage = (skillDamage * damageMultiplier * timeMultiplier) * (user.characterStat.magic * 0.3f);
+            
+            //방어 시
+            if (target.isDefending)
+            {
+                damage /= 2;
+            }
             target.TakeDamage((int)damage);
         }
     }

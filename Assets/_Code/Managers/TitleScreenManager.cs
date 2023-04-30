@@ -9,11 +9,10 @@ namespace _Code.Managers
         // UI
         [SerializeField] private BoolDialog @bool;
         [SerializeField] private ErrorDialog @error;
+        [SerializeField] private SaveLoadManager saveLoadManager;
 
         // Texts
-        private const string NewGameText = "새로운 게임을 시작합니다.";
-        private const string LoadGameText = "이전에 저장한 게임을 불러옵니다.";
-        private const string QuitGameText = "게임을 종료합니까.";
+        private const string QuitGameText = "게임을 종료합니다.";
         
         // Manager
         private GameManager _gameManager;
@@ -33,6 +32,7 @@ namespace _Code.Managers
         public void LoadGame()
         {
             _gameManager.state = GameState.Load;
+            saveLoadManager.Show();
         }
 
         public void QuitGame()

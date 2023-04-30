@@ -1,40 +1,58 @@
-using System;
 using System.Collections.Generic;
 using _Code.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.InputSystem;
+
 
 namespace _Code.Managers
 {
     public class SaveLoadManager : MonoBehaviour
     {
-        // UI Prefabs
-        /*[SerializeField] private NameInputPanel nameInputPanel;
-        [SerializeField] private BoolDialog boolDialog;
-        [SerializeField] private ErrorDialog errorDialog;*/
-        
         // UI
         [SerializeField] private List<SaveSlot> saveSlots;
-    
+
+        // Input Actions
+        private PlayerInput _playerInput;
+        private InputAction _cancelAction;
+        
         // Manager
         private GameManager _gameManager;
+
+        private void Awake()
+        {
+            _playerInput = FindObjectOfType<PlayerInput>();
+            _cancelAction = _playerInput.actions["Cancel"];
+        }
 
         private void Start()
         {
             _gameManager = GameManager.instance;
             UpdateSlots(_gameManager.state);
+            
+            Hide();
         }
 
-        #region 세이브 슬롯 액션
+        #region Save Slot Action
 
         private void UpdateSlots(GameState state)
         {
-            // ReSharper disable once PossibleNullReferenceException
             for (var idx = 0; idx < saveSlots.Count; idx++)
             {
                 var slot = saveSlots[idx];
-                // ReSharper disable once PossibleNullReferenceException
-                var saveData = _gameManager.LoadData(idx);
+                SaveData saveData;
+                if (_gameManager.IsSaveFileExist(idx))
+                {
+                    saveData = _gameManager.LoadData(idx);
+                }
+                else
+                {
+                    saveData = new SaveData
+                    {
+                        playerName = "Empty Slot",
+                        currentDay = 0,
+                        currentLocation = "N/A"
+                    };
+                }
                 AddListeners(slot, state, idx);
                 UpdateSlotUI(saveData, slot, idx);
             }
@@ -43,33 +61,63 @@ namespace _Code.Managers
         private void AddListeners(SaveSlot slot, GameState state, int idx)
         {
             slot.button.onClick.RemoveAllListeners();
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (state)
             {
                 case GameState.Save:
-                    // ReSharper disable once AccessToModifiedClosure
                     slot.button.onClick.AddListener(() => _gameManager.SaveGame(idx));
                     break;
                 case GameState.Load:
-                    // ReSharper disable once AccessToModifiedClosure
-                    slot.button.onClick.AddListener(() => _gameManager.LoadGame(idx));
-                    break;
-                /*case GameState.NewGame:
-                    // ReSharper disable once AccessToModifiedClosure
-                    slot.button.onClick.AddListener(() => _gameManager.NewGame(idx));
-                    break;*/
-                default:
+                    if (_gameManager.IsSaveFileExist(idx))
+                    {
+                        slot.button.onClick.AddListener(() => _gameManager.LoadGame(idx));
+                    }
                     break;
             }
         }
 
         private static void UpdateSlotUI(SaveData data, SaveSlot slot, int idx)
         {
-            slot.slotNumberText.text = idx.ToString();
-            slot.slotDayText.text = data.currentDay.ToString();
+            var i = idx + 1;
+            slot.slotNumberText.text = i.ToString();
+            slot.slotDayText.text = "Day\n" + data.currentDay;
             slot.slotPlayerNameText.text = data.playerName;
             slot.slotLocationText.text = data.currentLocation;
         }
+        
+        #endregion
+        
+        #region 세이브 슬롯 UI
+
+        public void Show()
+        {
+            UpdateSlots(_gameManager.state);
+            this.gameObject.SetActive(true);
+        }
+        
+        public void Hide()
+        {
+            this.gameObject.SetActive(false);
+        }
+
+        #endregion
+
+        #region Input Actions
+
+        private void OnEnable()
+        {
+            _cancelAction.performed += OnCancelPerformed;
+        }
+        
+        private void OnDisable()
+        {
+            _cancelAction.performed -= OnCancelPerformed;
+        }
+        
+        private void OnCancelPerformed(InputAction.CallbackContext context)
+        {
+            Hide();
+        }
+        
         #endregion
     }
 }

@@ -18,8 +18,9 @@ namespace _Code.Skill
         public override void UseSkill(CharacterData user, CharacterData target, int time)
         {
             Debug.Log("Use Skill" + this.skillName);
+            var timeMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
             var healMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
-            var heal = user.characterStat.blessing * healMultiplier;
+            var heal = (healAmount * healMultiplier * timeMultiplier) * (user.characterStat.blessing * 0.3f);
             
             target.TakeHeal((int)heal);
         }

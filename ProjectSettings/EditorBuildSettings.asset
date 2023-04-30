@@ -26,7 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map/Explore02.unity
     guid: 998cc1ffababcf2419e31167f739db2b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Battle/BattleUI.unity
     guid: b8d1ad2cf5abe3e439ba699b640fbfca
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/Battle/SkillTest.unity
+    guid: c95fcdbf00e1b444a8486a3d68496b4c
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 093c46a03e4cfcf47835f204f8d03b5f,
+      type: 2}

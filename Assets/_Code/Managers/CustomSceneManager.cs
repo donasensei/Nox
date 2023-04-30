@@ -7,8 +7,6 @@ namespace _Code.Managers
 {
     public class CustomSceneManager : MonoBehaviour
     {
-        private LoadingScreen _loadingScreenInstance;
-
         // Singleton
         public static CustomSceneManager instance { get; private set; }
 

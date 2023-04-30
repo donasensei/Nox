@@ -21,8 +21,13 @@ namespace _Code.Skill
             
             var timeMultiplier = Mathf.Lerp(1f, 2.5f, (time - 1f) / 9f);
             var damageMultiplier = user.GetDamageMultiplier();
-            var damage = user.characterStat.strength * damageMultiplier * timeMultiplier;
+            var damage = (skillDamage * damageMultiplier * timeMultiplier) * (user.characterStat.strength * 0.3f);
             
+            // 방어 시
+            if (target.isDefending)
+            {
+                damage /= 2;
+            }
             target.TakeDamage((int)damage);
         }
     }

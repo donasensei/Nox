@@ -43,10 +43,17 @@ namespace _Code.Character
         // HideInInspector
         [HideInInspector] public bool isAlive = true;
         [HideInInspector] public bool isSuppressed = false;
+        [HideInInspector] public bool isDefending = false;
         public void UpdateStats()
         {
             characterStat.maxHealth = characterStat.CalculateMaxHealth(level, characterStat.vitality);
             characterStat.maxMana = characterStat.CalculateMaxMana(level,characterStat.magic, characterStat.blessing);
+        }
+        
+        public void SetCurrent()
+        {
+            currentHealth = characterStat.maxHealth;
+            currentMana = characterStat.maxMana;
         }
 
         public void TakeDamage(int damage)
@@ -72,7 +79,6 @@ namespace _Code.Character
         {
             var totalPercentage = activeBuffs.Sum();
             activeBuffs.Clear();
-            
             return 1f + (totalPercentage / 100f);
         }
     }
@@ -132,6 +138,12 @@ namespace _Code.Character
         {
             characterStat.maxHealth = characterStat.CalculateMaxHealth(level, characterStat.vitality);
             characterStat.maxMana = characterStat.CalculateMaxMana(level,characterStat.magic, characterStat.blessing);
+        }
+
+        public void SetCurrent()
+        {
+            currentHealth = characterStat.maxHealth;
+            currentMana = characterStat.maxMana;
         }
     }
 }

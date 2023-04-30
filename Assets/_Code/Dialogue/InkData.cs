@@ -8,8 +8,13 @@ namespace _Code.Dialogue
     [CreateAssetMenu(fileName = "New Ink Data", menuName = "Ink Data")]
     public class InkData : ScriptableObject
     {
+        // Ink Data
         public TextAsset inkFile;
         private Story _story;
+        
+        private static readonly HashSet<Story> StoriesWithBoundFunctions = new HashSet<Story>();
+        
+        // Images
         [SerializeField] public List<Sprite> characterImages;
         [SerializeField] public List<Sprite> backgroundImages;
 
@@ -19,8 +24,11 @@ namespace _Code.Dialogue
             {
                 _story = new Story(inkFile.text);
             }
-            
-            _story.BindExternalFunction("GetCharacterName", GetCharacterName);
+
+            if (StoriesWithBoundFunctions.Contains(_story)) return _story;
+            _story.BindExternalFunction("getCharacterName", GetCharacterName);
+            StoriesWithBoundFunctions.Add(_story);
+
             return _story;
         }
 

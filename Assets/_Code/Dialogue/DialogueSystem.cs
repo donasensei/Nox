@@ -4,6 +4,8 @@ using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+
 namespace _Code.Dialogue
 {
     public class DialogueSystem : MonoBehaviour
@@ -17,7 +19,9 @@ namespace _Code.Dialogue
         [SerializeField] private DialogueUI dialogueUI;
 
         // Input
-        private InputAction _continueAction;
+        private PlayerInput _playerInput;
+        private InputAction _submitAction;
+        private InputAction _clickAction;
 
        // Managers
         private GameManager _gameManager;
@@ -28,6 +32,12 @@ namespace _Code.Dialogue
         private const string BackgroundTag = "BG";
         private const string NarrationTag = "Narration";
         private const string EndNarrationTag = "EndNarration";
+        
+        // Boolean
+        private bool _isContinueActionTriggered;
+        
+        // Const
+        private const string MainCharacterTag = "주인공";
 
         private void Awake()
         {
@@ -37,24 +47,31 @@ namespace _Code.Dialogue
         private void SetUpInputSystem()
         {
             // Set up the Input System
-            _continueAction = new InputAction("Continue", InputActionType.Button);
-            _continueAction.AddBinding("<Keyboard>/enter");
-            _continueAction.AddBinding("<Mouse>/leftButton");
-            _continueAction.AddBinding("<Gamepad>/buttonSouth");
-            _continueAction.performed += ctx => ContinueWhenNotTyping();
-            _continueAction.Enable();
+            _playerInput = FindObjectOfType<PlayerInput>();
+            
+            // Set up the Submit action
+            _submitAction = _playerInput.actions["Submit"];
+            _submitAction.performed += _ => ContinueWhenNotTyping();
+            _submitAction.Enable();
+
+            // Set up the Click action
+            _clickAction = _playerInput.actions["Click"];
+            _clickAction.performed += _ => OnClick();
+            _clickAction.Enable();
         }
 
         private void Start()
         {
+            _gameManager = GameManager.instance;
             _currentStory = inkData.GetStory();
+            StartStory();
         }
+        
         private void StartStory()
         {
             _currentStory = inkData.GetStory();
             dialogueUI.Show();
             ShowNextLine();
-            _continueAction.Enable();
         }
 
         public void StartStory(InkData data) 
@@ -63,10 +80,16 @@ namespace _Code.Dialogue
             _currentStory = data.GetStory();
             dialogueUI.Show();
             ShowNextLine();
-            _continueAction.Enable();
         }
 
         private void ContinueWhenNotTyping()
+        {
+            if (_isContinueActionTriggered) return;
+            _isContinueActionTriggered = true;
+            Invoke(nameof(PerformContinue), 0.1f);
+        }
+
+        private void PerformContinue()
         {
             if (dialogueUI.IsTyping())
             {
@@ -76,7 +99,9 @@ namespace _Code.Dialogue
             {
                 ShowNextLine();
             }
+            _isContinueActionTriggered = false;
         }
+
 
         private void ShowNextLine()
         {
@@ -92,7 +117,6 @@ namespace _Code.Dialogue
                 ShowCharacterInfo();
                 _currentStory.ResetState();
                 dialogueUI.Hide();
-                _continueAction.Disable();
             }
         }
 
@@ -114,16 +138,16 @@ namespace _Code.Dialogue
             switch (tagKey)
             {
                 case BackgroundTag:
-                    if (int.TryParse(tagKey, out var index))
+                    if (int.TryParse(tagValue, out var index))
                     {
                         dialogueUI.SetBackgroundImage(inkData.backgroundImages[index]);
                     }
                     break;
                 case CharacterNameTag:
-                    dialogueUI.SetCharacterName(tagValue == "주인공" ? _gameManager.saveData.playerName : tagValue);
+                    dialogueUI.SetCharacterName(tagValue == MainCharacterTag ? _gameManager.saveData.playerName : tagValue);
                     break;
                 case CharacterImageTag:
-                    if(int.TryParse(tagKey, out var imageIndex))
+                    if (int.TryParse(tagValue, out var imageIndex))
                     {
                         dialogueUI.SetCharacterImage(inkData.characterImages[imageIndex]);
                     }
@@ -133,8 +157,6 @@ namespace _Code.Dialogue
                     break;
                 case EndNarrationTag:
                     ShowCharacterInfo();
-                    break;
-                default:
                     break;
             }
         }
@@ -151,9 +173,20 @@ namespace _Code.Dialogue
             dialogueUI.HideCharacterName();
         }
 
+        #region 이벤트 함수
+
+        private void OnClick()
+        {
+            ContinueWhenNotTyping();
+        }
+
         private void OnDestroy()
         {
-            _continueAction.Disable();
+            _submitAction.Disable();
+            _clickAction.Disable();
         }
+
+        #endregion
+        
     }
 }

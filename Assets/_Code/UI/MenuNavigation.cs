@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -8,72 +9,77 @@ namespace _Code.UI
     public class MenuNavigation : MonoBehaviour
     {
         [SerializeField] private EventSystem eventSystem;
-        [SerializeField] private GameObject defaultSelectedUIElement;
+        // [SerializeField] private GameObject defaultSelectedUIElement;
+        [SerializeField] private float checkInterval = 0.1f;
 
-        private PlayerInput playerInput;
-        private InputAction movementAction;
-        private InputAction submitAction;
-        private InputAction cancelAction;
+        private PlayerInput _playerInput;
+        private InputAction _movementAction;
+        private InputAction _submitAction;
+        private InputAction _cancelAction;
 
-        private GameObject currentSelectedUIElement;
+        private GameObject _currentSelectedUIElement;
+        private Selectable[] _uiElements;
 
         private void Awake()
         {
-            playerInput = GetComponent<PlayerInput>();
-            movementAction = playerInput.actions["Navigate"];
-            submitAction = playerInput.actions["Submit"];
-            cancelAction = playerInput.actions["Cancel"];
+            _playerInput = FindObjectOfType<PlayerInput>();
+            _movementAction = _playerInput.actions["Navigate"];
+            _submitAction = _playerInput.actions["Submit"];
+            _cancelAction = _playerInput.actions["Cancel"];
+            
+            _uiElements = FindObjectsOfType<Selectable>();
         }
 
         private void OnEnable()
         {
-            movementAction.performed += OnNavigatePerformed;
-            submitAction.performed += OnSubmitPerformed;
-            cancelAction.performed += OnCancelPerformed;
+            _movementAction.performed += OnNavigatePerformed;
+            _submitAction.performed += OnSubmitPerformed;
+            _cancelAction.performed += OnCancelPerformed;
+            
+            StartCoroutine(CheckForActiveUIElementCoroutine());
         }
 
         private void OnDisable()
         {
-            movementAction.performed -= OnNavigatePerformed;
-            submitAction.performed -= OnSubmitPerformed;
-            cancelAction.performed -= OnCancelPerformed;
+            _movementAction.performed -= OnNavigatePerformed;
+            _submitAction.performed -= OnSubmitPerformed;
+            _cancelAction.performed -= OnCancelPerformed;
+            
+            StopCoroutine(CheckForActiveUIElementCoroutine());
         }
 
         private void Start()
         {
-            if (defaultSelectedUIElement != null)
-            {
-                eventSystem.SetSelectedGameObject(defaultSelectedUIElement);
-                currentSelectedUIElement = defaultSelectedUIElement;
-            }
+            FindAndSelectFirstActiveSelectable();
         }
-
-        private void Update()
+        
+        private IEnumerator CheckForActiveUIElementCoroutine()
         {
-            if (currentSelectedUIElement == null || !currentSelectedUIElement.activeInHierarchy)
+            while (true)
             {
-                FindAndSelectFirstActiveSelectable();
-            }
-        }
+                if (_currentSelectedUIElement == null || !_currentSelectedUIElement.activeInHierarchy)
+                {
+                    FindAndSelectFirstActiveSelectable();
+                }
 
+                yield return new WaitForSeconds(checkInterval);
+            }
+            // ReSharper disable once IteratorNeverReturns
+        }
 
         private void FindAndSelectFirstActiveSelectable()
         {
-            Selectable[] uiElements = GameObject.FindObjectsOfType<Selectable>();
-
-            if (uiElements.Length == 0)
+            if (_uiElements.Length == 0)
             {
                 return;
             }
 
-            int startIndex = -1;
-            for (int i = 0; i < uiElements.Length; i++)
+            var startIndex = -1;
+            for (var i = 0; i < _uiElements.Length; i++)
             {
-                if (uiElements[i].gameObject == currentSelectedUIElement)
-                {
-                    startIndex = i;
-                    break;
-                }
+                if (_uiElements[i].gameObject != _currentSelectedUIElement) continue;
+                startIndex = i;
+                break;
             }
 
             if (startIndex == -1)
@@ -81,47 +87,42 @@ namespace _Code.UI
                 startIndex = 0;
             }
 
-            int index = startIndex;
+            var index = startIndex;
             do
             {
-                index = (index + 1) % uiElements.Length;
-                if (uiElements[index].gameObject.activeInHierarchy && uiElements[index].interactable)
-                {
-                    eventSystem.SetSelectedGameObject(uiElements[index].gameObject);
-                    currentSelectedUIElement = uiElements[index].gameObject;
-                    break;
-                }
+                index = (index + 1) %(_uiElements.Length);
+                if (!_uiElements[index].gameObject.activeInHierarchy || !_uiElements[index].interactable) continue;
+                eventSystem.SetSelectedGameObject(_uiElements[index].gameObject);
+                _currentSelectedUIElement = _uiElements[index].gameObject;
+                break;
             } while (index != startIndex);
         }
 
-
-
         private void OnNavigatePerformed(InputAction.CallbackContext context)
         {
-            Vector2 movement = context.ReadValue<Vector2>();
+            var movement = context.ReadValue<Vector2>();
             AxisEventData axisEventData = new(eventSystem)
             {
                 moveVector = movement
             };
-            ExecuteEvents.Execute(currentSelectedUIElement, axisEventData, ExecuteEvents.moveHandler);
-            currentSelectedUIElement = axisEventData.selectedObject;
+            ExecuteEvents.Execute(_currentSelectedUIElement, axisEventData, ExecuteEvents.moveHandler);
+            _currentSelectedUIElement = axisEventData.selectedObject;
         }
 
         private void OnSubmitPerformed(InputAction.CallbackContext context)
         {
-            if (currentSelectedUIElement != null)
-            {
-                ExecuteEvents.Execute(currentSelectedUIElement, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
+            if (_currentSelectedUIElement == null) return;
+            ExecuteEvents.Execute(_currentSelectedUIElement, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
 
-                // Handle toggle state change explicitly
-                if (currentSelectedUIElement.TryGetComponent<Toggle>(out var toggleComponent))
-                {
-                    toggleComponent.isOn = !toggleComponent.isOn;
-                }
+            // Handle toggle state change explicitly
+            if (_currentSelectedUIElement.TryGetComponent<Toggle>(out var toggleComponent))
+            {
+                toggleComponent.isOn = !toggleComponent.isOn;
             }
         }
 
-        private void OnCancelPerformed(InputAction.CallbackContext context)
+
+        private static void OnCancelPerformed(InputAction.CallbackContext context)
         {
             // Implement cancel logic if needed
         }

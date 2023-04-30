@@ -34,6 +34,7 @@ namespace _Code.Skill
         Attack,
         Magic, 
         Heal,
-        Buff
+        Buff,
+        Defense
     }
 }

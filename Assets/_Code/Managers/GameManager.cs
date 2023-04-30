@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Code.Character;
@@ -14,7 +13,7 @@ namespace _Code.Managers
 
         // SaveData
         private readonly string[] _saveFileNames = { "sav01", "sav02", "sav03", "sav04" };
-        private const string key = "SaveData";
+        private const string Key = "SaveData";
         public SaveData saveData;
         
         // Frame Rate
@@ -37,20 +36,18 @@ namespace _Code.Managers
 
             // Limit the frame rate
             Application.targetFrameRate = frame;
+
+            // UpdateReferences();
         }
+
 
         private void Start()
         { 
             // Set State
             state = GameState.MainMenu;
-
-            saveData = new SaveData
-            {
-                characterList = new List<CharacterDataWrapper>(),
-                partyList = new List<CharacterDataWrapper>(),
-                stageDataList = new List<StageData>()
-            };
         }
+
+        #region Scene관련
 
         private void OnEnable()
         {
@@ -64,15 +61,24 @@ namespace _Code.Managers
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (SceneManager.GetActiveScene().name == scene.name) return;
-            saveData.lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            saveData.lastSceneName = SceneManager.GetActiveScene().name;
+            saveData.lastSceneIndex = scene.buildIndex;
+            saveData.lastSceneName = scene.name;
+            // UpdateReferences();
         }
-
-        public DayNight GetDayNight() 
+        
+        #endregion
+        
+        public void ChangeDay() 
         {
-            DayNight daynight = saveData.dayNight;
-            return daynight;
+            if (saveData.dayNight == DayNight.Night)
+            {
+                saveData.dayNight = DayNight.Day;
+                saveData.currentDay++;
+            }
+            else
+            {
+                saveData.dayNight = DayNight.Night;
+            }
         }
 
         #region 캐릭터 관련
@@ -99,7 +105,7 @@ namespace _Code.Managers
             return characterDataList.Select(characterData => new CharacterDataWrapper(characterData)).ToList();
         }
 
-        public List<CharacterData> ConvertToCharacterDataList(List<CharacterDataWrapper> wrapperList)
+        public static List<CharacterData> ConvertToCharacterDataList(List<CharacterDataWrapper> wrapperList)
         {
             List<CharacterData> characterDataList = new();
 
@@ -123,7 +129,7 @@ namespace _Code.Managers
             return characterDataList;
         }
 
-        public static CharacterDataWrapper ConvertToWrapper(CharacterData characterData)
+        private static CharacterDataWrapper ConvertToWrapper(CharacterData characterData)
         {
             CharacterDataWrapper wrapper = new(characterData);
             return wrapper;
@@ -133,16 +139,14 @@ namespace _Code.Managers
 
         #region Save관련
 
-        public static bool checkSaveFileExist => ES3.FileExists();
-
         public void SaveGame(int index)
         {
-            ES3.Save(key, saveData, _saveFileNames[index]);
+            ES3.Save(Key, saveData, _saveFileNames[index]);
         }
 
         public SaveData LoadData(int index)
         {
-            return ES3.Load(key, _saveFileNames[index], saveData);
+            return ES3.Load(Key, _saveFileNames[index], saveData);
         }
 
         public void LoadGame(int index)
@@ -150,11 +154,22 @@ namespace _Code.Managers
             saveData = LoadData(index);
             CustomSceneManager.instance.LoadScene(saveData.lastSceneIndex);
         }
+
+        public bool IsSaveFileExist()
+        {
+            return _saveFileNames.Any(ES3.FileExists);
+        }
+        
+        public bool IsSaveFileExist(int index)
+        {
+            return ES3.FileExists(_saveFileNames[index]);
+        }
         
         public void NewGame()
         {
             saveData = NewSaveData("테스트"); //TODO: 이름 입력 받을 것
-            CustomSceneManager.instance.LoadScene(saveData.lastSceneName);
+            SaveGame(0);
+            CustomSceneManager.instance.LoadScene("SkillTest"); //TODO: 나중에 변경할 것
         }
         public void DeleteData(int index)
         {
@@ -177,6 +192,21 @@ namespace _Code.Managers
                 stageDataList = new List<StageData>(),
                 flags = new Flags()
             };
+            
+            // 캐릭터 추가
+            var player = Resources.Load("Characters/Player") as CharacterData;
+            var friend = Resources.Load("Characters/Friend") as CharacterData;
+            var rider = Resources.Load("Characters/Rider") as CharacterData;
+
+            data.partyList.Add(ConvertToWrapper(player));
+            data.partyList.Add(ConvertToWrapper(friend));
+            data.partyList.Add(ConvertToWrapper(rider));
+
+            foreach (var character in data.partyList)
+            {
+                character.UpdateStats();
+                character.SetCurrent();
+            }
             return data;
         }
     

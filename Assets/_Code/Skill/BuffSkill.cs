@@ -9,10 +9,7 @@ namespace _Code.Skill
         [Tooltip("효과 증가 퍼센트")]
         [Range(0, 100)]
         public float buffPercentage;
-
-        [Tooltip("지속시간")]
-        public int buffDuration;
-
+        
         private BuffSkill()
         {
             skillType = SkillType.Buff;
@@ -22,10 +19,9 @@ namespace _Code.Skill
         public override void UseSkill(CharacterData user, CharacterData target, int time)
         {
             Debug.Log("Use Skill" + this.skillName);
-            if (skillType == SkillType.Buff)
-            {
-                target.ApplyBuff(buffPercentage);
-            }
+
+            var timeMultiplier = Mathf.Lerp(0.0f, 20.0f, (time - 1f) / 9f);
+            target.ApplyBuff(buffPercentage + timeMultiplier);
         }
     }
 }
