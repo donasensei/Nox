@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Code.Character;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,25 @@ namespace _Code.Managers
 
         // Singleton
         public static GameManager instance { get; private set; }
+        
+        // Constants
+
+        #region 캐릭터 관련
+        
+        private const string CharacterDataPath = "Characters/";
+        private const string MainCharacter = "Player";
+        private const string FriendCharacter = "Friend";
+        private const string RiderCharacter = "Rider";
+
+        #endregion
+
+        #region Scene 사전 색인
+        //TODO: 새로운 Scene 추가시 여기에 추가
+        
+        [UsedImplicitly] private const string TitleScene = "Title Screen";
+        [UsedImplicitly] private const string FirstStoryScene = "Intro01";
+
+        #endregion
 
         private void Awake()
         {
@@ -169,7 +189,7 @@ namespace _Code.Managers
         {
             saveData = NewSaveData("테스트"); //TODO: 이름 입력 받을 것
             SaveGame(0);
-            CustomSceneManager.instance.LoadScene("SkillTest"); //TODO: 나중에 변경할 것
+            CustomSceneManager.instance.LoadScene(saveData.lastSceneName);
         }
         public void DeleteData(int index)
         {
@@ -184,8 +204,7 @@ namespace _Code.Managers
                 currentLocation = "엘더스 지하감옥",
                 currentDay = 1,
                 dayNight = DayNight.Night,
-                lastSceneIndex = 0,
-                lastSceneName = "Intro01",
+                lastSceneName = FirstStoryScene,
                 stones = 0,
                 characterList = new List<CharacterDataWrapper>(),
                 partyList = new List<CharacterDataWrapper>(),
@@ -194,9 +213,9 @@ namespace _Code.Managers
             };
             
             // 캐릭터 추가
-            var player = Resources.Load("Characters/Player") as CharacterData;
-            var friend = Resources.Load("Characters/Friend") as CharacterData;
-            var rider = Resources.Load("Characters/Rider") as CharacterData;
+            var player = Resources.Load(CharacterDataPath+MainCharacter) as CharacterData;
+            var friend = Resources.Load(CharacterDataPath+FriendCharacter) as CharacterData;
+            var rider = Resources.Load(CharacterDataPath+RiderCharacter) as CharacterData;
 
             data.partyList.Add(ConvertToWrapper(player));
             data.partyList.Add(ConvertToWrapper(friend));
