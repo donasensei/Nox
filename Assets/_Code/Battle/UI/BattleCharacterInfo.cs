@@ -2,7 +2,7 @@ using _Code.Character;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Code.UI
+namespace _Code.Battle.UI
 {
     public class BattleCharacterInfo : MonoBehaviour
     {
@@ -11,9 +11,13 @@ namespace _Code.UI
         [SerializeField] private Text characterMp;
         [SerializeField] private Image healthBar;
         [SerializeField] private Image manaBar;
-
+        [SerializeField] private BattleSkillInfoPanel skillInfoPanel;
+        
+        public CharacterData characterData { get; private set; }
+        
         public void UpdateInfo(CharacterData data)
         {
+            characterData = data; 
             characterName.text = data.characterName;
 
             var healthPercent = (float)data.currentHealth / data.characterStat.maxHealth;
@@ -23,6 +27,9 @@ namespace _Code.UI
             var manaPercent = (float)data.currentMana / data.characterStat.maxMana;
             manaBar.fillAmount = manaPercent;
             characterMp.text = data.currentMana.ToString() + "/" + data.characterStat.maxMana.ToString();
+            
+            // Skill Field
+            skillInfoPanel.SetupSkillToggles(data.characterSkill);
         }
     }
 }

@@ -1,6 +1,8 @@
+using System;
 using _Code.Dialogue;
 using _Code.UI;
 using UnityEngine;
+using EasyTransition;
 
 namespace _Code.Managers
 {
@@ -14,9 +16,12 @@ namespace _Code.Managers
         private const string TownEditText = "마을 운영은 작업 중입니다.";
 
         [SerializeField] private CanvasGroup[] canvasGroups;
+
+        private TransitionManager _transitionManager;
+
         private void Start()
         {
-
+            _transitionManager = gameObject.AddComponent<TransitionManager>();
         }
 
         private void Update()
@@ -39,7 +44,7 @@ namespace _Code.Managers
 
         public void CharacterEdit()
         {
-            CustomSceneManager.instance.LoadScene("CharacterEdit");
+            _transitionManager.LoadScene("CharacterEdit", "Fade", 1f);
         }
 
         public void SkillTree()

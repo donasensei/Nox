@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef900eefcaf4f2e49935d5f06e0dd0b1, type: 3}
+  m_Name: Test Enemt 1
+  m_EditorClassIdentifier: 
+  characterName: "\uD14C\uC2A4\uD2B8\uC6A9 \uC801 B"
+  characterDesc: "\uD14C\uC2A4\uD2B8\uC6A9 \uC801 A"
+  characterImage: {fileID: 0}
+  characterStat:
+    maxHealth: 0
+    maxMana: 0
+    strength: 4
+    magic: 2
+    vitality: 4
+    blessing: 2
+    bonusStat: 0
+  currentHealth: 25
+  currentMana: 25
+  level: 1
+  experience: 0
+  characterSkill:
+  - {fileID: 11400000, guid: 7e3e603697a63e64eab8b7caae4d80bb, type: 2}
+  - {fileID: 11400000, guid: 10ff6f4a9a08ead468a3df0b5afb8b43, type: 2}
+  defaultSkill:
+  - {fileID: 11400000, guid: 97625fe7fb246364f9c6af310ed941be, type: 2}
+  - {fileID: 11400000, guid: cfbbf6706f2f0db4d80d8e4cda1efcad, type: 2}
+  activeBuffs: []
+  isAlive: 1
+  isSuppressed: 0
+  isDefending: 0

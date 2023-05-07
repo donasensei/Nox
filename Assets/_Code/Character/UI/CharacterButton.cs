@@ -1,22 +1,21 @@
-using _Code.Character;
+using _Code.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Code.UI
+namespace _Code.Character.UI
 {
     public class CharacterButton : MonoBehaviour
     {
-        // [SerializeField] private Button button;
         [SerializeField] private Toggle toggle;
         [SerializeField] private Text buttonText;
 
         private CharacterInfoPanel _characterInfoPanel;
 
-        public CharacterDataWrapper characterData { get; private set; }
+        public CharacterDataWrapper dataWrapper { get; private set; }
 
         public void Initialize(CharacterDataWrapper characterDataWrapper, CharacterInfoPanel characterInfoPanel, Color textColor)
         {
-            this.characterData = characterDataWrapper;
+            this.dataWrapper = characterDataWrapper;
             this._characterInfoPanel = characterInfoPanel;
 
             buttonText.text = characterDataWrapper.characterName;
@@ -28,7 +27,7 @@ namespace _Code.UI
         {
             if (isOn)
             {
-                _characterInfoPanel.DisplayCharacterInfo(characterData);
+                _characterInfoPanel.DisplayCharacterInfo(dataWrapper);
             }
         }
     }

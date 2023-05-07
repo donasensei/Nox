@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _Code.Character;
+using _Code.Character.UI;
 using _Code.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -64,7 +65,7 @@ namespace _Code.Managers
 
             if (_characterButtons.Count > 0)
             {
-                characterInfoPanel.DisplayCharacterInfo(_characterButtons[0].characterData);
+                characterInfoPanel.DisplayCharacterInfo(_characterButtons[0].dataWrapper);
             }
         }
     }

@@ -1,79 +1,69 @@
-using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Code.UI
+namespace _Code.Dialogue.UI
 {
     public class DialogueUI : MonoBehaviour
     {
-        // Texts
-        [SerializeField] private Text characterName;
-        [SerializeField] private Text dialogueText;
+        // Container
+        public GameObject nameBox;
+        
+        // Text
+        public TMP_Text nameText;
+        public TMP_Text dialogueText;
+        
+        // Image
+        public Image backgroundSprite;
+        public Image characterSprite;
 
-        // Images
-        [SerializeField] private Image characterImage;
-        [SerializeField] private Image backgroundImage;
-        [SerializeField] private TypingEffect typing;
-
-        // UI
-        [SerializeField] private GameObject characterBox;
-
-        public void SetCharacterName(string name)
+        // Methods
+        // ReSharper disable once ParameterHidesMember
+        public void SetName(string name)
         {
-            characterName.text = name;
+            nameText.text = name;
+        }
+        
+        public void SetDialogue(string dialogue)
+        {
+            dialogueText.text = dialogue;
         }
 
-        public void SetCharacterImage(Sprite sprite)
+        public void SetBackground(Sprite background)
         {
-            characterImage.sprite = sprite;
+            backgroundSprite.sprite = background;
         }
-        public void SetBackgroundImage(Sprite sprite)
+        
+        public void SetCharacter(Sprite character)
         {
-            backgroundImage.sprite = sprite;
+            characterSprite.color = Color.white;
+            characterSprite.sprite = character;
         }
-
-        public void RefreshLine(string dialogue, Action onComplete)
+        
+        public void HideCharacter()
         {
-            typing.StartTyping(dialogue, dialogueText, onComplete);
-        }
-
-        public void FinishTyping()
-        {
-            typing.FinishTyping(dialogueText);
-        }
-
-        public bool IsTyping()
-        {
-            return typing.GetIsTyping();
-        }
-
-        public void HideCharacterImage()
-        {
-            characterBox.gameObject.SetActive(false);
-        }
-
-        public void HideCharacterName()
-        {
-            characterName.gameObject.SetActive(false);
-        }
-
-        public void ShowCharacterImage()
-        {
-            characterBox.gameObject.SetActive(true);
-        }
-
-        public void ShowCharacterName()
-        {
-            characterName.gameObject.SetActive(true);
+            characterSprite.sprite = null;
+            characterSprite.color = Color.clear;
         }
 
         public void Show()
         {
-            this.gameObject.SetActive(true);
+            gameObject.SetActive(true);
         }
-
-        public void Hide(){
-            this.gameObject.SetActive(false);
+        
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+        
+        public void ShowNameBox()
+        {
+            nameBox.SetActive(true);
+        }
+        
+        public void HideNameBox()
+        {
+            nameBox.SetActive(false);
         }
     }
 }

@@ -16,12 +16,10 @@ namespace _Code.Managers
         
         // Manager
         private GameManager _gameManager;
-        private CustomSceneManager _customSceneManager;
 
         private void Start()
         {
             _gameManager = GameManager.instance;
-            _customSceneManager = CustomSceneManager.instance;
         }
 
         public void NewGame()

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Code.Character;
+using _Code.Explore;
+using EasyTransition;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,6 +25,9 @@ namespace _Code.Managers
         // Singleton
         public static GameManager instance { get; private set; }
         
+        // Scene Transition
+        private TransitionManager _transitionManager;
+
         // Constants
 
         #region 캐릭터 관련
@@ -57,7 +62,7 @@ namespace _Code.Managers
             // Limit the frame rate
             Application.targetFrameRate = frame;
 
-            // UpdateReferences();
+            _transitionManager = gameObject.AddComponent<TransitionManager>();
         }
 
 
@@ -172,7 +177,7 @@ namespace _Code.Managers
         public void LoadGame(int index)
         {
             saveData = LoadData(index);
-            CustomSceneManager.instance.LoadScene(saveData.lastSceneIndex);
+            _transitionManager.LoadScene(saveData.lastSceneIndex, "Fade", 1f);
         }
 
         public bool IsSaveFileExist()
@@ -189,7 +194,7 @@ namespace _Code.Managers
         {
             saveData = NewSaveData("테스트"); //TODO: 이름 입력 받을 것
             SaveGame(0);
-            CustomSceneManager.instance.LoadScene(saveData.lastSceneName);
+            _transitionManager.LoadScene(saveData.lastSceneName, "Fade", 1f);
         }
         public void DeleteData(int index)
         {
@@ -273,7 +278,6 @@ namespace _Code.Managers
     public struct Flags
     {
         // Add Story or Quest Flags Here ↓
-
     }
 
     public enum GameState

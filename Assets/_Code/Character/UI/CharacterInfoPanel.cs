@@ -1,9 +1,8 @@
-using _Code.Character;
 using _Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Code.UI
+namespace _Code.Character.UI
 {
     public class CharacterInfoPanel : MonoBehaviour
     {
@@ -86,7 +85,7 @@ namespace _Code.UI
 
         private void UpdateStatButtons()
         {
-            bool canIncreaseStat = _characterData.characterStat.bonusStat > 0;
+            var canIncreaseStat = _characterData.characterStat.bonusStat > 0;
 
             strPlus.gameObject.SetActive(canIncreaseStat);
             magPlus.gameObject.SetActive(canIncreaseStat);

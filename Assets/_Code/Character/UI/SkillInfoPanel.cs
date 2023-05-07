@@ -3,7 +3,7 @@ using _Code.Skill;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Code.UI
+namespace _Code.Character.UI
 {
     public class SkillInfoPanel : MonoBehaviour
     {

@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using _Code.Battle;
 using _Code.Dialogue;
-using _Code.Explore;
+using _Code.Managers;
 using _Code.UI;
+using EasyTransition;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace _Code.Managers
+namespace _Code.Explore
 {
     public class StageManager : MonoBehaviour
     {
@@ -24,12 +25,16 @@ namespace _Code.Managers
         
         // Managers 
         private GameManager _gameManager;
+        private TransitionManager _transitionManager;
 
         // UI 
         [SerializeField] private LocationIndicator locationIndicator;
         [SerializeField] private List<CanvasGroup> canvasGroups;
         [SerializeField] private ErrorDialog errorDialog;
         [SerializeField] private DialogueSystem dialogueSystem;
+        
+        // Dialogue
+        [SerializeField] private GameObject dialogueSystemPrefab;
 
         // DEBUG
         public string nextSceneName;
@@ -140,7 +145,13 @@ namespace _Code.Managers
             // 다이얼로그 데이터가 할당된 경우 스토리부터 진행
             if(currentNode.inkData != null)
             {
-                dialogueSystem.StartStory(currentNode.inkData);
+                // 다이얼로그 시스템이 없는 경우 생성
+                if (dialogueSystem == null)
+                {
+                    dialogueSystem = Instantiate(dialogueSystemPrefab).GetComponent<DialogueSystem>();
+                }
+                dialogueSystem.SetInkData(currentNode.inkData);
+                return;
             }
             
             switch (currentNode.nodeType)
@@ -159,7 +170,7 @@ namespace _Code.Managers
             }
             if (currentNode.connectedNodes.Length > 0 || nextSceneName == "") return;
             GameManager.instance.state = GameState.MainMenu;
-            CustomSceneManager.instance.LoadScene(nextSceneName);
+            _transitionManager.LoadScene(nextSceneName, "Fade", 1f);
         }
 
         private void EnableUIInteractions()

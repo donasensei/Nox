@@ -460,5 +460,7 @@ MonoBehaviour:
   inactiveSprites:
   - {fileID: 21300000, guid: 8a0d6bab03a3a0b4da581190cf71dc8c, type: 3}
   - {fileID: 21300000, guid: 649ebe6d0370f1c4fbefe0cb66e37979, type: 3}
-  NodeSprite: {fileID: 7995979883263511051}
-  NodeLightSprite: {fileID: 8698148337291528133}
+  nodeSprite: {fileID: 7995979883263511051}
+  nodeLightSprite: {fileID: 8698148337291528133}
+  inkData: {fileID: 0}
+  enemyCharacters: []

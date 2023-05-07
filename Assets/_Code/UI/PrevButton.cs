@@ -15,7 +15,7 @@ namespace _Code.UI
 
         private void OnClick()
         {
-            CustomSceneManager.instance.LoadPreviousScene();
+
         }
     }
 }
